@@ -10,7 +10,9 @@ defmodule Trot do
   @doc """
   Takes a Plug.Conn and sends a "not found" message to the requestor.
   """
-  def not_found(conn) do
+  def not_found(conn), do: not_found(conn, [])
+  def not_found(conn = %Plug.Conn{state: :unset}, _opts) do
     Plug.Conn.send_resp(conn, Plug.Conn.Status.code(:not_found), "<html><body>Not Found</body></html>")
   end
+  def not_found(conn, _opts), do: conn
 end

@@ -22,14 +22,20 @@ defmodule Trot.Router do
         Map.get(conn.private, :trot_route).(conn)
       end
 
+      def call(conn, opts) do
+        super(conn, opts)
+        |> Trot.not_found(opts)
+        |> assign(:called_all_plugs, true)
+      end
+
       @before_compile Trot.Router
     end
   end
 
-  defmacro __before_compile__(_env) do
+  defmacro __before_compile__(env) do
     quote do
       defp do_match(_method, _path, _host) do
-        &Trot.not_found/1
+        fn(conn) -> conn end
       end
     end
   end
