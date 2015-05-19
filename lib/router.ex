@@ -1,5 +1,6 @@
 defmodule Trot.Router do
   alias Plug.Conn.Status
+  require Logger
 
   @doc false
   defmacro __using__(_opts) do
@@ -67,6 +68,7 @@ defmodule Trot.Router do
     raise ArgumentError, message: "conn must be sent before being returned"
   end
   def make_response(conn = %Plug.Conn{}, _conn), do: conn
+  def make_response({:redirect, to}, conn), do: redirect(to, conn)
   def make_response(code, conn) when is_number(code) do
     Plug.Conn.send_resp(conn, code, "")
   end
@@ -87,6 +89,19 @@ defmodule Trot.Router do
   def make_response(body, conn) do
     body = Poison.encode!(body)
     Plug.Conn.send_resp(conn, Status.code(:ok), body)
+  end
+
+  @doc """
+  Redirect the request to another location.
+  """
+  def redirect(path, conn) when is_binary(path) do
+    Logger.info "Redirecting to #{path}"
+    URI.parse(path) |> redirect(conn)
+  end
+  def redirect(uri = %URI{}, conn) do
+    conn
+    |> Plug.Conn.put_resp_header("Location", to_string(uri))
+    |> Plug.Conn.send_resp(Status.code(:temporary_redirect), "")
   end
 
   defmacro get(path, options \\ [], do: body), do: compile(:get, path, options, body)
