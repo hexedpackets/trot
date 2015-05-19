@@ -1,4 +1,6 @@
 defmodule Trot.Router do
+  @http_methods [:get, :post, :put, :patch, :delete, :options]
+
   @doc false
   defmacro __using__(_opts) do
     quote do
@@ -11,13 +13,19 @@ defmodule Trot.Router do
 
       defp match(conn, _opts) do
         Plug.Conn.put_private(conn,
-          :plug_route,
+          :trot_route,
           do_match(conn.method, Enum.map(conn.path_info, &URI.decode/1), conn.host))
       end
 
       defp dispatch(%Plug.Conn{assigns: assigns} = conn, _opts) do
-        Map.get(conn.private, :plug_route).(conn) |> Trot.Router.make_response(conn)
+        Map.get(conn.private, :trot_route).(conn) |> Trot.Router.make_response(conn)
       end
+    end
+  end
+
+  defmacro is_http_method(thing) do
+    quote do
+      is_atom(unquote(thing)) and unquote(thing) in @http_methods
     end
   end
 
