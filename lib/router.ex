@@ -16,7 +16,7 @@ defmodule Trot.Router do
       end
 
       defp dispatch(%Plug.Conn{assigns: assigns} = conn, _opts) do
-        Map.get(conn.private, :trot_route).(conn) |> Trot.Router.make_response(conn)
+        Map.get(conn.private, :trot_route).(conn)
       end
 
       @before_compile Trot.Router
@@ -26,7 +26,7 @@ defmodule Trot.Router do
   defmacro __before_compile__(_env) do
     quote do
       defp do_match(_method, _path, _host) do
-        fn (_conn) -> 404 end
+        fn (conn) -> send_resp(conn, 404, "<html><body>Not Found</body></html>") end
       end
     end
   end
@@ -103,14 +103,8 @@ defmodule Trot.Router do
                         body: Macro.escape(body, unquote: true)] do
       {method, match, host, guards} = Plug.Router.__route__(method, path, guards, options)
 
-      if Keyword.get(options, :with_conn) do
-        defp do_match(unquote(method), unquote(match), unquote(host)) when unquote(guards) do
-          fn var!(conn) -> unquote(body) end
-        end
-      else
-        defp do_match(unquote(method), unquote(match), unquote(host)) when unquote(guards) do
-          fn (_conn) -> unquote(body) end
-        end
+      defp do_match(unquote(method), unquote(match), unquote(host)) when unquote(guards) do
+        fn var!(conn) -> unquote(body) |> Trot.Router.make_response(var!(conn)) end
       end
     end
   end
