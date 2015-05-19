@@ -39,29 +39,49 @@ defmodule Trot.Router do
 
   ## Examples
 
-      ### Sets status code to 200 with an empty body
+      # Sets status code to 200 with an empty body
       get "/" do
         200
       end
 
-      ### Sets the status code to 201 and sets the body to "oh yeah!"
+      # Returns an empty body with a status code of 404
+      get "/bad" do
+        :bad_request
+      end
+
+      # Sets the status code to 200 with a text body
+      get "/text" do
+        "Thank you for your question."
+      end
+
+      # Sets the status code to 201 with a text body
       get "/text/body" do
-        {201, "oh yeah!"}
+        {201, "Thank you for your question."}
       end
 
-      ### Sets status code to 200 with a JSON-encoded body
-      get "/" do
-        %{"oh" => "yeah"}
+      # Sets status code to 200 with a JSON-encoded body
+      get "/json" do
+        %{"hyper" => "social"}
       end
 
-      ### Sets the status code to 201 with a JSON-encoded body
-      get "/" do
-        {201, %{"oh" => "yeah"}}
+      # Sets the status code to 201 with a JSON-encoded body
+      get "/json/code" do
+        {201, %{"hyper" => "social"}}
       end
 
-      ### Sets the status code to 200 and sets the body to "oh yeah!"
-      get "/" do
-        "oh yeah!"
+      # Set the response manually as when using Plug directly
+      get "/conn" do
+        send_resp(conn, 200, "optimal tip-to-tip efficiency")
+      end
+
+      # Pattern match part of the path into a variable
+      get "/presenter/:name" do
+        "The presenter is #{name}"
+      end
+
+      # Redirect the incoming request
+      get "/redirect" do
+        {:redirect, "/text/body"}
       end
   """
   def make_response(%Plug.Conn{state: :set}, _conn) do
