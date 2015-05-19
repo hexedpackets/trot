@@ -1,4 +1,6 @@
 defmodule Trot.Router do
+  alias Plug.Conn.Status
+
   @doc false
   defmacro __using__(_opts) do
     quote do
@@ -26,7 +28,7 @@ defmodule Trot.Router do
   defmacro __before_compile__(_env) do
     quote do
       defp do_match(_method, _path, _host) do
-        fn (conn) -> send_resp(conn, 404, "<html><body>Not Found</body></html>") end
+        fn (conn) -> send_resp(conn, Status.code(:not_found), "<html><body>Not Found</body></html>") end
       end
     end
   end
@@ -68,6 +70,10 @@ defmodule Trot.Router do
   def make_response(code, conn) when is_number(code) do
     Plug.Conn.send_resp(conn, code, "")
   end
+  def make_response(code, conn) when is_atom(code) do
+    code = Status.code(code)
+    Plug.Conn.send_resp(conn, code, "")
+  end
   def make_response({code, body}, conn) when is_number(code) and is_binary(body) do
     Plug.Conn.send_resp(conn, code, body)
   end
@@ -76,11 +82,11 @@ defmodule Trot.Router do
     Plug.Conn.send_resp(conn, code, body)
   end
   def make_response(body, conn) when is_binary(body) do
-    Plug.Conn.send_resp(conn, 200, body)
+    Plug.Conn.send_resp(conn, Status.code(:ok), body)
   end
   def make_response(body, conn) do
     body = Poison.encode!(body)
-    Plug.Conn.send_resp(conn, 200, body)
+    Plug.Conn.send_resp(conn, Status.code(:ok), body)
   end
 
   defmacro get(path, options \\ [], do: body), do: compile(:get, path, options, body)
