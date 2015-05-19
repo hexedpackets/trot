@@ -74,6 +74,11 @@ defmodule Trot.Router do
   end
 
   defmacro get(path, options \\ [], do: body), do: compile(:get, path, options, body)
+  defmacro post(path, options \\ [], do: body), do: compile(:post, path, options, body)
+  defmacro put(path, options \\ [], do: body), do: compile(:put, path, options, body)
+  defmacro patch(path, options \\ [], do: body), do: compile(:patch, path, options, body)
+  defmacro delete(path, options \\ [], do: body), do: compile(:delete, path, options, body)
+  defmacro options(path, options \\ [], do: body), do: compile(:options, path, options, body)
 
   # Entry point for both forward and match that is actually
   # responsible to compile the route.
