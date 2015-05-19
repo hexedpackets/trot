@@ -34,7 +34,7 @@ defmodule Trot.Router do
     end
   end
 
-  @doc """
+  @doc ~S"""
   Encodes HTTP responses as appropriate and passes them to Plug.Conn.
 
   ## Examples
