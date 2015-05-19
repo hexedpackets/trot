@@ -20,12 +20,22 @@ defmodule Trot.Router do
       defp dispatch(%Plug.Conn{assigns: assigns} = conn, _opts) do
         Map.get(conn.private, :trot_route).(conn) |> Trot.Router.make_response(conn)
       end
+
+      @before_compile Trot.Router
     end
   end
 
   defmacro is_http_method(thing) do
     quote do
       is_atom(unquote(thing)) and unquote(thing) in @http_methods
+    end
+  end
+
+  defmacro __before_compile__(_env) do
+    quote do
+      defp do_match(_method, _path, _host) do
+        fn (_conn) -> 404 end
+      end
     end
   end
 
