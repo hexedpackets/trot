@@ -73,23 +73,13 @@ defmodule Trot.Router do
     Plug.Conn.send_resp(conn, 200, body)
   end
 
-  defmacro get(path, options, contents \\ []) do
-    compile(:get, path, options, contents)
-  end
+  defmacro get(path, options \\ [], do: body), do: compile(:get, path, options, body)
 
   # Entry point for both forward and match that is actually
   # responsible to compile the route.
-  defp compile(method, expr, options, contents) do
-    {body, options} =
-      cond do
-        b = contents[:do] ->
-          {b, options}
-        options[:do] ->
-          Keyword.pop(options, :do)
-        true ->
-          raise ArgumentError, message: "expected :do to be given as option"
-      end
+  defp compile(method, expr, options, body) do
     {path, guards} = extract_path_and_guards(expr)
+    options = sanitize_options(options)
 
     quote bind_quoted: [method: method,
                         path: path,
@@ -98,7 +88,7 @@ defmodule Trot.Router do
                         body: Macro.escape(body, unquote: true)] do
       {method, match, host, guards} = Plug.Router.__route__(method, path, guards, options)
 
-      if Keyword.get(options, :conn) do
+      if Keyword.get(options, :with_conn) do
         defp do_match(unquote(method), unquote(match), unquote(host)) when unquote(guards) do
           fn var!(conn) -> unquote(body) end
         end
@@ -109,6 +99,11 @@ defmodule Trot.Router do
       end
     end
   end
+
+  defp sanitize_options(options), do: Enum.map(options, &default_keyword/1)
+
+  defp default_keyword(item = {_key, _value}), do: item
+  defp default_keyword(key) when is_atom(key), do: {key, true}
 
   # Extract the path and guards from the path.
   defp extract_path_and_guards({:when, _, [path, guards]}), do: {extract_path(path), guards}
