@@ -16,7 +16,7 @@ defmodule Trot.Router do
       end
 
       defp dispatch(%Plug.Conn{assigns: assigns} = conn, _opts) do
-        Map.get(conn.private, :plug_route).() |> Trot.Router.make_response(conn)
+        Map.get(conn.private, :plug_route).(conn) |> Trot.Router.make_response(conn)
       end
     end
   end
@@ -51,6 +51,10 @@ defmodule Trot.Router do
         "oh yeah!"
       end
   """
+  def make_response(%Plug.Conn{state: :set}, _conn) do
+    raise ArgumentError, message: "conn must be sent before being returned"
+  end
+  def make_response(conn = %Plug.Conn{}, _conn), do: conn
   def make_response(code, conn) when is_number(code) do
     Plug.Conn.send_resp(conn, code, "")
   end
@@ -68,10 +72,6 @@ defmodule Trot.Router do
     body = Poison.encode!(body)
     Plug.Conn.send_resp(conn, 200, body)
   end
-  def send_resp(%Plug.Conn{state: :set}) do
-    raise ArgumentError, message: "conn must be sent before being returned"
-  end
-  def send_resp(conn = %Plug.Conn{}), do: conn
 
   defmacro get(path, options, contents \\ []) do
     compile(:get, path, options, contents)
@@ -98,8 +98,14 @@ defmodule Trot.Router do
                         body: Macro.escape(body, unquote: true)] do
       {method, match, host, guards} = Plug.Router.__route__(method, path, guards, options)
 
-      defp do_match(unquote(method), unquote(match), unquote(host)) when unquote(guards) do
-        fn () -> unquote(body) end
+      if Keyword.get(options, :conn) do
+        defp do_match(unquote(method), unquote(match), unquote(host)) when unquote(guards) do
+          fn var!(conn) -> unquote(body) end
+        end
+      else
+        defp do_match(unquote(method), unquote(match), unquote(host)) when unquote(guards) do
+          fn (_conn) -> unquote(body) end
+        end
       end
     end
   end
