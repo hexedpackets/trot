@@ -137,6 +137,12 @@ defmodule Trot.Router do
   defmacro delete(path, options \\ [], do: body), do: compile(:delete, path, options, body)
   defmacro options(path, options \\ [], do: body), do: compile(:options, path, options, body)
 
+  defmacro static(at, from) do
+    quote do
+      @plugs {Plug.Static, [at: unquote(at), from: unquote(from)], true}
+    end
+  end
+
   # Entry point for both forward and match that is actually
   # responsible to compile the route.
   defp compile(method, expr, options, body) do
