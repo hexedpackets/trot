@@ -29,7 +29,7 @@ defmodule Trot.Router do
   defmacro __before_compile__(_env) do
     quote do
       defp do_match(_method, _path, _host) do
-        fn (conn) -> send_resp(conn, Status.code(:not_found), "<html><body>Not Found</body></html>") end
+        &Trot.not_found/1
       end
     end
   end
