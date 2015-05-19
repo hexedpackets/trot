@@ -1,6 +1,4 @@
 defmodule Trot.Router do
-  @http_methods [:get, :post, :put, :patch, :delete, :options]
-
   @doc false
   defmacro __using__(_opts) do
     quote do
@@ -22,12 +20,6 @@ defmodule Trot.Router do
       end
 
       @before_compile Trot.Router
-    end
-  end
-
-  defmacro is_http_method(thing) do
-    quote do
-      is_atom(unquote(thing)) and unquote(thing) in @http_methods
     end
   end
 
