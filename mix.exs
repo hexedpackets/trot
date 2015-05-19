@@ -11,8 +11,7 @@ defmodule Trot.Mixfile do
   end
 
   def application do
-    [applications: [:logger, :plug, :cowboy],
-     mod: {Trot, []}]
+    [applications: [:logger, :plug, :cowboy]]
   end
 
   defp deps do
