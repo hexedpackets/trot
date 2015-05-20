@@ -29,6 +29,7 @@ defmodule Trot.RouterTest do
     get "/redirect", do: {:redirect, "/text"}
 
     redirect "/macro_redirect", "/status"
+    static "/static", "test/static"
   end
 
   test "route returns status code" do
@@ -102,5 +103,11 @@ defmodule Trot.RouterTest do
   test "default not found route" do
     conn = call(Router, :get, "/this/does/not/exist")
     assert conn.status == 404
+  end
+
+  test "static routes" do
+    conn = call(Router, :get, "/static/text.html")
+    assert conn.status == 200
+    assert conn.resp_body == "<html><body>You found me</body></html>\n"
   end
 end
