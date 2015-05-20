@@ -8,6 +8,9 @@ defmodule Trot.Mixfile do
      version: @version,
      elixir: "~> 1.0",
      deps: deps,
+     name: "Trot",
+     docs: [readme: "README.md", main: "README",
+            source_url: "https://github.com/hexedpackets/trot"],
 
      # Hex
      description: description,
