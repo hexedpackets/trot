@@ -94,7 +94,7 @@ defmodule Trot.Router do
     raise ArgumentError, message: "conn must be sent before being returned"
   end
   def make_response(conn = %Plug.Conn{}, _conn), do: conn
-  def make_response({:redirect, to}, conn), do: redirect(to, conn)
+  def make_response({:redirect, to}, conn), do: do_redirect(to, conn)
   def make_response(code, conn) when is_number(code) do
     Plug.Conn.send_resp(conn, code, "")
   end
@@ -120,11 +120,11 @@ defmodule Trot.Router do
   @doc """
   Redirect the request to another location.
   """
-  def redirect(path, conn) when is_binary(path) do
+  def do_redirect(path, conn) when is_binary(path) do
     Logger.info "Redirecting to #{path}"
-    URI.parse(path) |> redirect(conn)
+    URI.parse(path) |> do_redirect(conn)
   end
-  def redirect(uri = %URI{}, conn) do
+  def do_redirect(uri = %URI{}, conn) do
     conn
     |> Plug.Conn.put_resp_header("Location", to_string(uri))
     |> Plug.Conn.send_resp(Status.code(:temporary_redirect), "")
@@ -141,6 +141,11 @@ defmodule Trot.Router do
     quote do
       @plugs {Plug.Static, [at: unquote(at), from: unquote(from)], true}
     end
+  end
+
+  defmacro redirect(from, to) do
+    body = quote do: {:redirect, unquote(to)}
+    compile(:get, from, [], body)
   end
 
   # Entry point for both forward and match that is actually
