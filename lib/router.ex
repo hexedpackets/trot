@@ -95,26 +95,20 @@ defmodule Trot.Router do
   end
   def make_response(conn = %Plug.Conn{}, _conn), do: conn
   def make_response({:redirect, to}, conn), do: do_redirect(to, conn)
-  def make_response(code, conn) when is_number(code) do
-    Plug.Conn.send_resp(conn, code, "")
-  end
-  def make_response(code, conn) when is_atom(code) do
-    code = Status.code(code)
-    Plug.Conn.send_resp(conn, code, "")
-  end
+  def make_response(body, conn) when is_binary(body), do: make_response({:ok, body}, conn)
+  def make_response(code, conn) when is_number(code), do: make_response({code, ""}, conn)
+  def make_response(code, conn) when is_atom(code), do: make_response({Status.code(code), ""}, conn)
+  def make_response({code, body}, conn) when is_atom(code), do: make_response({Status.code(code), body}, conn)
   def make_response({code, body}, conn) when is_number(code) and is_binary(body) do
     Plug.Conn.send_resp(conn, code, body)
   end
   def make_response({code, body}, conn) when is_number(code) do
     body = Poison.encode!(body)
-    Plug.Conn.send_resp(conn, code, body)
-  end
-  def make_response(body, conn) when is_binary(body) do
-    Plug.Conn.send_resp(conn, Status.code(:ok), body)
+    make_response({code, body}, conn)
   end
   def make_response(body, conn) do
     body = Poison.encode!(body)
-    Plug.Conn.send_resp(conn, Status.code(:ok), body)
+    make_response({:ok, body}, conn)
   end
 
   @doc """
