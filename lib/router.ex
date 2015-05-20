@@ -32,7 +32,7 @@ defmodule Trot.Router do
     end
   end
 
-  defmacro __before_compile__(env) do
+  defmacro __before_compile__(_env) do
     quote do
       defp do_match(_method, _path, _host) do
         fn(conn) -> conn end
