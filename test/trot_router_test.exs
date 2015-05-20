@@ -1,6 +1,5 @@
 defmodule Trot.RouterTest do
   use ExUnit.Case, async: true
-  import Plug.Test
 
   @doc """
   Calls a routing endpoint with a fake connections, then returns the connection after it has
@@ -16,6 +15,7 @@ defmodule Trot.RouterTest do
 
   defmodule Router do
     use Trot.Router
+    @template_root "test/templates"
 
     get "/status", do: 200
     get "/status_atom", do: :bad_request
@@ -27,6 +27,7 @@ defmodule Trot.RouterTest do
     get "/conn", do: send_resp(conn, 200, "optimal tip-to-tip efficiency")
     get "/presenter/:name", do: "The presenter is #{name}"
     get "/redirect", do: {:redirect, "/text"}
+    get "/template/:text", do: render_template("index.html.eex", [body: text])
 
     redirect "/macro_redirect", "/status"
     static "/static", "test/static"
@@ -109,5 +110,11 @@ defmodule Trot.RouterTest do
     conn = call(Router, :get, "/static/text.html")
     assert conn.status == 200
     assert conn.resp_body == "<html><body>You found me</body></html>\n"
+  end
+
+  test "route renders eex template" do
+    conn = call(Router, :get, "/template/render_me_plz")
+    assert conn.status == 200
+    assert conn.resp_body == "<html><body>render_me_plz</body></html>\n"
   end
 end
