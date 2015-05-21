@@ -7,7 +7,6 @@ defmodule Trot.Router do
     quote do
       import Trot.Router
       use Plug.Builder
-      use Trot.Template
 
       plug Plug.Logger
       plug :match

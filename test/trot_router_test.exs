@@ -15,6 +15,7 @@ defmodule Trot.RouterTest do
 
   defmodule Router do
     use Trot.Router
+    use Trot.Template
     @template_root "test/templates"
 
     get "/status", do: 200

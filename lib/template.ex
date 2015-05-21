@@ -29,14 +29,6 @@ defmodule Trot.Template do
   end
 
   @doc """
-  Renders a set of values to an EEx template.
-  """
-  #def render(template, values) do
-  #  Path.join("templates", template)
-  #  |> EEx.eval_file(values)
-  #end
-
-  @doc """
   Finds and compiles template files.
   """
   def compile(files, root) when is_list(files) do
