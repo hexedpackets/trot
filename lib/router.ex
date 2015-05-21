@@ -34,7 +34,7 @@ defmodule Trot.Router do
 
   defmacro __before_compile__(_env) do
     quote do
-      defp do_match(_method, _path, _host) do
+      def do_match(_method, _path, _host) do
         fn(conn) -> conn end
       end
     end
@@ -155,7 +155,7 @@ defmodule Trot.Router do
                         body: Macro.escape(body, unquote: true)] do
       {method, match, host, guards} = Plug.Router.__route__(method, path, guards, options)
 
-      defp do_match(unquote(method), unquote(match), unquote(host)) when unquote(guards) do
+      def do_match(unquote(method), unquote(match), unquote(host)) when unquote(guards) do
         fn var!(conn) -> unquote(body) |> Trot.Router.make_response(var!(conn)) end
       end
     end
