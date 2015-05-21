@@ -1,7 +1,7 @@
 defmodule Trot.Mixfile do
   use Mix.Project
 
-  @version "0.2.1-dev"
+  @version "0.3.0"
 
   def project do
     [app: :trot,
