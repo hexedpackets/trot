@@ -6,7 +6,7 @@ Trot is an Elixir web micro-framework based on Plug and Cowboy. The goal of Trot
 ## Responses
 All of the following are valid return values from handlers and will be parsed into full HTTP responses:
 - String of response body
-- Status code
+- Status code, either numeric or an atom from `Plug.Conn.Status`
 - `{code, body}`
 - JSONable object
 - `{code, object}`
@@ -14,7 +14,24 @@ All of the following are valid return values from handlers and will be parsed in
 - `%Plug.Conn{}`
 
 
-## Example application
+## Templates
+Some conviences are provided for using EEx, the default templating engine include with Elixir. When the application is compiled all of templates under a given path are loaded and compiled for quicker rendering. A `render/2` function is generated for every template under the module attribute `@template_root`. By default, `@template_root` is "templates/".
+
+
+### Example app using templates:
+
+    defmodule PiedPiper do
+      use Trot.Router
+      use Trot.Template
+      @template_root "templates/root"
+
+      get "/compression" do
+        render("compression_results.html.eex", [weissman_score: 5.2])
+      end
+    end
+
+
+### Example router application
     defmodule SoLoMoApp.Router do
       use Trot.Router
 
