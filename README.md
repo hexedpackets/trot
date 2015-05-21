@@ -15,7 +15,7 @@ All of the following are valid return values from handlers and will be parsed in
 
 
 ## Templates
-Some conviences are provided for using EEx, the default templating engine include with Elixir. When the application is compiled all of templates under a given path are loaded and compiled for quicker rendering. A `render/2` function is generated for every template under the module attribute `@template_root`. By default, `@template_root` is "templates/".
+Some conviences are provided for using EEx, the default templating engine include with Elixir. When the application is compiled all of templates under a given path are loaded and compiled for faster rendering. A `render/2` function is generated for every template under the module attribute `@template_root`. By default, `@template_root` is "templates/".
 
 
 ### Example app using templates:

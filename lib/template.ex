@@ -1,6 +1,23 @@
 defmodule Trot.Template do
   @moduledoc """
-  Server side templates used to render HTML.
+  Server side rendering of HTML using EEx templates. When the application is
+  compiled all of templates under a given path are loaded and compiled for
+  faster rendering. A `render/2` function is generated for every template under
+  the module attribute `@template_root`.
+
+  By default, `@template_root` is "templates/".
+
+  ## Example:
+
+      defmodule PiedPiper do
+        use Trot.Router
+        use Trot.Template
+        @template_root "templates/root"
+
+        get "/compression" do
+          render("compression_results.html.eex", [weissman_score: 5.2])
+        end
+      end
   """
 
   @doc false
