@@ -1,5 +1,6 @@
 # 0.3.0 - UNRELEASED
 - Support for template rendering using EEx
+- Add a default root for static routes of priv/static
 
 # 0.2.1 - May 20, 2015
 - Fixed sending response of {atom, text} to resolve the atom to a status code
