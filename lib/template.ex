@@ -20,6 +20,8 @@ defmodule Trot.Template do
       end
   """
 
+  @extensions [:eex, :haml]
+
   @doc false
   defmacro __using__(_opts) do
     quote do
@@ -85,7 +87,8 @@ defmodule Trot.Template do
   """
   def find_all(nil), do: []
   def find_all(root) do
-    Path.join(root, "**.eex")
+    extensions = Enum.join(@extensions, ",")
+    Path.join(root, "**.{#{extensions}}")
     |> Path.wildcard
   end
 
