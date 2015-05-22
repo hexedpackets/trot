@@ -1,5 +1,5 @@
 # 0.3.0 - UNRELEASED
-- Support for template rendering using EEx
+- Support for template rendering using EEx and/or HAML
 - Add a default root for static routes of priv/static
 
 # 0.2.1 - May 20, 2015
