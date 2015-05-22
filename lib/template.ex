@@ -25,7 +25,7 @@ defmodule Trot.Template do
     quote do
       import Trot.Template
 
-      @template_root Path.relative_to_cwd("templates")
+      @template_root Path.relative_to_cwd("priv/templates")
 
       @before_compile Trot.Template
     end
@@ -75,7 +75,7 @@ defmodule Trot.Template do
     quoted = EEx.compile_file(file)
     quote do
       def render_template(unquote(file_match), var!(assigns)) do
-        unquote(quoted)
+          unquote(quoted)
       end
     end
   end

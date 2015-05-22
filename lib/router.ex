@@ -28,6 +28,8 @@ defmodule Trot.Router do
         |> assign(:called_all_plugs, true)
       end
 
+      @static_root Path.relative_to_cwd("priv/static")
+
       @before_compile Trot.Router
     end
   end
@@ -131,15 +133,35 @@ defmodule Trot.Router do
   defmacro delete(path, options \\ [], do: body), do: compile(:delete, path, options, body)
   defmacro options(path, options \\ [], do: body), do: compile(:options, path, options, body)
 
-  defmacro static(at, from) do
-    quote do
-      @plugs {Plug.Static, [at: unquote(at), from: unquote(from)], true}
-    end
-  end
-
+  @doc """
+  Redirects all incoming requests for "from" to "to". The value of "to" will be put into the Location response header.
+  """
   defmacro redirect(from, to) do
     body = quote do: {:redirect, unquote(to)}
     compile(:get, from, [], body)
+  end
+
+  @doc """
+  Sets up a route to static assets. All requests beginning with "at" will look for a matching file under "from".
+  @static_root will be prepended to "from" and defaults to "priv/static".
+
+  ## Examples
+      static "/js", "assets/js"
+
+      @static_root "priv/assets/static"
+      static "/css", "css"
+  """
+  defmacro static(at, from), do: static_plug(at, from)
+  @doc """
+  Sets up a route for static to path at the @static_root, which defaults to "priv/static".
+  """
+  defmacro static(at), do: static_plug(at, "/")
+
+  defp static_plug(at, from) do
+    quote do
+      path = Path.join(@static_root, unquote(from))
+      @plugs {Plug.Static, [at: unquote(at), from: path], true}
+    end
   end
 
   # Entry point for both forward and match that is actually

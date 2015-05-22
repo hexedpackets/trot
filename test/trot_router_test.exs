@@ -17,6 +17,7 @@ defmodule Trot.RouterTest do
     use Trot.Router
     use Trot.Template
     @template_root "test/templates"
+    @static_root "test/static"
 
     get "/status", do: 200
     get "/status_atom", do: :bad_request
@@ -31,7 +32,8 @@ defmodule Trot.RouterTest do
     get "/template/:text", do: render_template("index.html.eex", [body: text])
 
     redirect "/macro_redirect", "/status"
-    static "/static", "test/static"
+    static "/static", "/"
+    static "/default_static"
   end
 
   test "route returns status code" do
@@ -109,6 +111,12 @@ defmodule Trot.RouterTest do
 
   test "static routes" do
     conn = call(Router, :get, "/static/text.html")
+    assert conn.status == 200
+    assert conn.resp_body == "<html><body>You found me</body></html>\n"
+  end
+
+  test "static routes with default path" do
+    conn = call(Router, :get, "/default_static/text.html")
     assert conn.status == 200
     assert conn.resp_body == "<html><body>You found me</body></html>\n"
   end
