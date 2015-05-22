@@ -29,7 +29,8 @@ defmodule Trot.RouterTest do
     get "/conn", do: send_resp(conn, 200, "optimal tip-to-tip efficiency")
     get "/presenter/:name", do: "The presenter is #{name}"
     get "/redirect", do: {:redirect, "/text"}
-    get "/template/:text", do: render_template("index.html.eex", [body: text])
+    get "/template/eex/:text", do: render_template("index.html.eex", [body: text])
+    get "/template/haml/:text", do: render_template("index.html.haml", [body: text])
 
     redirect "/macro_redirect", "/status"
     static "/static", "/"
@@ -122,8 +123,14 @@ defmodule Trot.RouterTest do
   end
 
   test "route renders eex template" do
-    conn = call(Router, :get, "/template/render_me_plz")
+    conn = call(Router, :get, "/template/eex/render_me_plz")
     assert conn.status == 200
     assert conn.resp_body == "<html><body>render_me_plz</body></html>\n"
+  end
+
+  test "route renders haml template" do
+    conn = call(Router, :get, "/template/haml/render_me_plz")
+    assert conn.status == 200
+    assert conn.resp_body == "<h1>render_me_plz</h1>"
   end
 end

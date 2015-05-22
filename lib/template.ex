@@ -62,22 +62,34 @@ defmodule Trot.Template do
   """
   def compile(files, root) when is_list(files) do
     files
-    |> Enum.map(&(compile(&1, root, pre_compile_templates)))
+    |> Enum.map(&(compile({&1, Path.extname(&1)}, root, pre_compile_templates)))
   end
-  def compile(file, root, _pre_compile = false) when is_binary(file) do
-    file_match = Path.relative_to(file, root)
-    quote do
-      def render_template(unquote(file_match), assigns) do
-        EEx.eval_file(unquote(file), assigns: assigns)
-      end
+  def compile({file, ".eex"}, root, _pre_compile = false) do
+    block = quote do: EEx.eval_file(unquote(file), assigns: var!(assigns))
+    _compile(file, root, block)
+  end
+  def compile({file, ".eex"}, root, _pre_compile = true) do
+    block = EEx.compile_file(file)
+    _compile(file, root, block)
+  end
+  def compile({file, ".haml"}, root, _pre_compile = false) do
+    block = quote do
+      Calliope.Engine.precompile_view(unquote(file))
+      |> Calliope.Render.eval(assigns: var!(assigns))
     end
+    _compile(file, root, block)
   end
-  def compile(file, root, _pre_compile = true) when is_binary(file) do
+  def compile({file, ".haml"}, root, _pre_compile = true) do
+    template = Calliope.Engine.precompile_view(file)
+    block = quote do: Calliope.Render.eval(unquote(template), assigns: var!(assigns))
+    _compile(file, root, block)
+  end
+
+  defp _compile(file, root, block) do
     file_match = Path.relative_to(file, root)
-    quoted = EEx.compile_file(file)
     quote do
       def render_template(unquote(file_match), var!(assigns)) do
-          unquote(quoted)
+        unquote(block)
       end
     end
   end
