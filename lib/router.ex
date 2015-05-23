@@ -54,12 +54,13 @@ defmodule Trot.Router do
 
   defmacro __before_compile__(_env) do
     quote do
-      import Trot, only: [not_found: 2]
-
       plug :match
       plug :dispatch
-      plug :not_found
 
+      @doc """
+      Pass-through route that matches all parametes. This ensures that the plug
+      pipeline won't die if there are more plugs after this module.
+      """
       def do_match(_method, _path, _host, _version) do
         fn(conn) -> conn end
       end

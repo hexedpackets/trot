@@ -102,11 +102,6 @@ defmodule Trot.RouterTest do
     assert location == "/status"
   end
 
-  test "default not found route" do
-    conn = call(Router, :get, "/this/does/not/exist")
-    assert conn.status == 404
-  end
-
   test "static routes" do
     conn = call(Router, :get, "/static/text.html")
     assert conn.status == 200
