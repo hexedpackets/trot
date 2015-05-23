@@ -35,6 +35,13 @@ defmodule Trot.RouterTest do
     redirect "/macro_redirect", "/status"
     static "/static", "/"
     static "/default_static"
+
+    defmodule API do
+      use Trot.Router
+      @path_root "api"
+
+      get "/status", do: 200
+    end
   end
 
   test "route returns status code" do
@@ -132,5 +139,10 @@ defmodule Trot.RouterTest do
     conn = call(Router, :get, "/template/haml/render_me_plz")
     assert conn.status == 200
     assert conn.resp_body == "<h1>render_me_plz</h1>"
+  end
+
+  test "routes with module-level path prefix" do
+    conn = call(Router.API, :get, "/api/status")
+    assert conn.status == 200
   end
 end

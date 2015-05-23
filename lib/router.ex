@@ -29,6 +29,7 @@ defmodule Trot.Router do
       end
 
       @static_root Path.relative_to_cwd("priv/static")
+      @path_root "/"
 
       @before_compile Trot.Router
     end
@@ -167,14 +168,15 @@ defmodule Trot.Router do
   # Entry point for both forward and match that is actually
   # responsible to compile the route.
   defp compile(method, expr, options, body) do
-    {path, guards} = extract_path_and_guards(expr)
     options = sanitize_options(options)
 
     quote bind_quoted: [method: method,
-                        path: path,
                         options: options,
-                        guards: Macro.escape(guards, unquote: true),
+                        expr: expr,
                         body: Macro.escape(body, unquote: true)] do
+
+      path = Path.join(@path_root, expr)
+      {path, guards} = Trot.Router.extract_path_and_guards(path)
       {method, match, host, guards} = Plug.Router.__route__(method, path, guards, options)
 
       def do_match(unquote(method), unquote(match), unquote(host)) when unquote(guards) do
@@ -188,9 +190,11 @@ defmodule Trot.Router do
   defp default_keyword(item = {_key, _value}), do: item
   defp default_keyword(key) when is_atom(key), do: {key, true}
 
-  # Extract the path and guards from the path.
-  defp extract_path_and_guards({:when, _, [path, guards]}), do: {extract_path(path), guards}
-  defp extract_path_and_guards(path), do: {extract_path(path), true}
+  @doc """
+  Extract the path and guards from the path.
+  """
+  def extract_path_and_guards({:when, _, [path, guards]}), do: {extract_path(path), guards}
+  def extract_path_and_guards(path), do: {extract_path(path), true}
 
   defp extract_path({:_, _, var}) when is_atom(var), do: "/*_path"
   defp extract_path(path), do: path
