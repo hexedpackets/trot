@@ -20,11 +20,12 @@ defmodule Trot.Router do
   defmacro __using__(_opts) do
     quote do
       import Trot.Router
-      use Plug.Builder
+      import Plug.Builder, only: [plug: 1, plug: 2]
+      import Plug.Conn
 
-      plug Plug.Logger
-      plug :match
-      plug :dispatch
+      @behaviour Plug
+      @plug_builder_opts []
+      Module.register_attribute(__MODULE__, :plugs, accumulate: true)
 
       defp match(conn, _opts) do
         Plug.Conn.put_private(conn,
@@ -36,21 +37,29 @@ defmodule Trot.Router do
         Map.get(conn.private, :trot_route).(conn)
       end
 
+      def init(opts), do: opts
       def call(conn, opts) do
-        super(conn, opts)
-        |> Trot.not_found(opts)
-        |> assign(:called_all_plugs, true)
+        plug_builder_call(conn, opts)
       end
 
       @static_root Path.relative_to_cwd("priv/static")
       @path_root "/"
 
+      plug Plug.Logger
+
       @before_compile Trot.Router
+      @before_compile Plug.Builder
     end
   end
 
   defmacro __before_compile__(_env) do
     quote do
+      import Trot, only: [not_found: 2]
+
+      plug :match
+      plug :dispatch
+      plug :not_found
+
       def do_match(_method, _path, _host) do
         fn(conn) -> conn end
       end

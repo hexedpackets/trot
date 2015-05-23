@@ -40,7 +40,7 @@ defmodule Trot.RouterTest do
       use Trot.Router
       @path_root "api"
 
-      get "/status", do: 200
+      get "/status", do: :ok
     end
   end
 
