@@ -39,8 +39,18 @@ defmodule Trot.RouterTest do
     defmodule API do
       use Trot.Router
       @path_root "api"
-
       get "/status", do: :ok
+    end
+
+    defmodule VersionedAPI do
+      use Trot.Router
+      use Trot.Versioning
+
+      get "/status", do: {:ok, conn.assigns[:version]}
+
+      get "/current", version: "v1", do: "o hai"
+      get "/current", version: "beta", do: :bad_request
+      get "/current", version: :any, do: :ok
     end
   end
 
@@ -144,5 +154,22 @@ defmodule Trot.RouterTest do
   test "routes with module-level path prefix" do
     conn = call(Router.API, :get, "/api/status")
     assert conn.status == 200
+  end
+
+  test "routes with versioned API" do
+    conn = call(Router.VersionedAPI, :get, "/v1/status")
+    assert conn.status == 200
+    assert conn.resp_body == "v1"
+  end
+
+  test "routes that match a specific version" do
+    conn = call(Router.VersionedAPI, :get, "/v1/current")
+    assert conn.status == 200
+    assert conn.resp_body == "o hai"
+    conn = call(Router.VersionedAPI, :get, "/beta/current")
+    assert conn.status == 400
+    conn = call(Router.VersionedAPI, :get, "/v2/current")
+    assert conn.status == 200
+    assert conn.resp_body == ""
   end
 end

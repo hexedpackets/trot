@@ -30,7 +30,7 @@ defmodule Trot.Router do
       defp match(conn, _opts) do
         Plug.Conn.put_private(conn,
           :trot_route,
-          do_match(conn.method, Enum.map(conn.path_info, &URI.decode/1), conn.host))
+          do_match(conn.method, Enum.map(conn.path_info, &URI.decode/1), conn.host, conn.assigns[:version]))
       end
 
       defp dispatch(%Plug.Conn{assigns: assigns} = conn, _opts) do
@@ -60,7 +60,7 @@ defmodule Trot.Router do
       plug :dispatch
       plug :not_found
 
-      def do_match(_method, _path, _host) do
+      def do_match(_method, _path, _host, _version) do
         fn(conn) -> conn end
       end
     end
@@ -150,19 +150,19 @@ defmodule Trot.Router do
     |> Plug.Conn.send_resp(Status.code(:temporary_redirect), "")
   end
 
-  defmacro get(path, options \\ [], do: body), do: compile(:get, path, options, body)
-  defmacro post(path, options \\ [], do: body), do: compile(:post, path, options, body)
-  defmacro put(path, options \\ [], do: body), do: compile(:put, path, options, body)
-  defmacro patch(path, options \\ [], do: body), do: compile(:patch, path, options, body)
-  defmacro delete(path, options \\ [], do: body), do: compile(:delete, path, options, body)
-  defmacro options(path, options \\ [], do: body), do: compile(:options, path, options, body)
+  defmacro get(path, options, contents \\ []), do: compile(:get, path, options, contents)
+  defmacro post(path, options, contents \\ []), do: compile(:post, path, options, contents)
+  defmacro put(path, options, contents \\ []), do: compile(:put, path, options, contents)
+  defmacro patch(path, options, contents \\ []), do: compile(:patch, path, options, contents)
+  defmacro delete(path, options, contents \\ []), do: compile(:delete, path, options, contents)
+  defmacro options(path, options, contents \\ []), do: compile(:options, path, options, contents)
 
   @doc """
   Redirects all incoming requests for "from" to "to". The value of "to" will be put into the Location response header.
   """
   defmacro redirect(from, to) do
     body = quote do: {:redirect, unquote(to)}
-    compile(:get, from, [], body)
+    compile(:get, from, [], do: body)
   end
 
   @doc """
@@ -190,7 +190,16 @@ defmodule Trot.Router do
 
   # Entry point for both forward and match that is actually
   # responsible to compile the route.
-  defp compile(method, expr, options, body) do
+  defp compile(method, expr, options, contents) do
+    {body, options} =
+      cond do
+        b = contents[:do] ->
+          {b, options}
+        options[:do] ->
+          Keyword.pop(options, :do)
+        true ->
+          raise ArgumentError, message: "expected :do to be given as option"
+      end
     options = sanitize_options(options)
 
     quote bind_quoted: [method: method,
@@ -201,8 +210,9 @@ defmodule Trot.Router do
       path = Path.join(@path_root, expr)
       {path, guards} = Trot.Router.extract_path_and_guards(path)
       {method, match, host, guards} = Plug.Router.__route__(method, path, guards, options)
+      version = Trot.Versioning.build_version_match(options[:version])
 
-      def do_match(unquote(method), unquote(match), unquote(host)) when unquote(guards) do
+      def do_match(unquote(method), unquote(match), unquote(host), unquote(version)) when unquote(guards) do
         fn var!(conn) -> unquote(body) |> Trot.Router.make_response(var!(conn)) end
       end
     end
