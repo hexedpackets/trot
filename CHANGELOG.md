@@ -1,3 +1,6 @@
+# 0.4.0 - UNRELEASED
+- Support for API versioning with pattern patching against versions
+
 # 0.3.0 - May 23, 2015
 - Support for template rendering using EEx and/or HAML
 - Add a default root for static routes of priv/static
