@@ -2,8 +2,12 @@
 
 Trot is an Elixir web micro-framework based on Plug and Cowboy. The goal of Trot is to make common patterns in Plug easier to use, particularly when writing APIs, without sacrificing flexibility.
 
+## Routes
+Routes are specified using one of the HTTP method macros: `get/2`, `post/2`, `put/2`, `patch/2`, `delete/2`, `options/2`. The first argument is a the path to route to, and the second argument is the block of code to execute. Examples are below.
 
-## Responses
+If `@path_root` is specified, it will be prefixed to all routes in that module.
+
+### Responses
 All of the following are valid return values from handlers and will be parsed into full HTTP responses:
 - String of response body
 - Status code, either numeric or an atom from `Plug.Conn.Status`
@@ -18,7 +22,7 @@ All of the following are valid return values from handlers and will be parsed in
 Some conviences are provided for using EEx, the default templating engine include with Elixir. When the application is compiled all of templates under a given path are loaded and compiled for faster rendering. A `render/2` function is generated for every template under the module attribute `@template_root`. By default, `@template_root` is "templates/".
 
 
-### Example app using templates:
+### Example app using templates
 
     defmodule PiedPiper do
       use Trot.Router

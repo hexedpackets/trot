@@ -1,4 +1,17 @@
 defmodule Trot.Router do
+  @moduledoc """
+  Module for creating routes based on the URL path.
+  Routes are specified using one of the HTTP method macros:
+  `get/2 post/2 put/2 patch/2 delete/2 options/2`.
+  The first argument is a the path to route to, and the second argument is the
+  block of code to execute. See examples below.
+
+  ## Module attributes
+  `@path_root`: URL path to prefix to all routes in the module. Defaults to "/".
+  `@static_root`: File path to use as the root when looking for static files.
+  Defaults to "priv/static".
+  """
+
   alias Plug.Conn.Status
   require Logger
 
