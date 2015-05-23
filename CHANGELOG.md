@@ -1,5 +1,7 @@
 # 0.4.0 - UNRELEASED
 - Support for API versioning with pattern patching against versions
+- Made connection handling for unknown routes optional. The old behavior can be re-enabled by adding `use Trot.NotFound` to the end of a routing module.
+- Added `import_routes/1` as a new macro to help chain router modules
 
 # 0.3.0 - May 23, 2015
 - Support for template rendering using EEx and/or HAML
