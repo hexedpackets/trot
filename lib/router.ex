@@ -67,6 +67,12 @@ defmodule Trot.Router do
     end
   end
 
+  defmacro import_routes(module) do
+    quote do
+      plug unquote(module)
+    end
+  end
+
   @doc ~S"""
   Encodes HTTP responses as appropriate and passes them to Plug.Conn.
 
