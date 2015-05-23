@@ -8,6 +8,7 @@ defmodule Trot.Router do
 
   ## Module attributes
   `@path_root`: URL path to prefix to all routes in the module. Defaults to "/".
+
   `@static_root`: File path to use as the root when looking for static files.
   Defaults to "priv/static".
   """
