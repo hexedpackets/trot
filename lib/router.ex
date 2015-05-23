@@ -49,6 +49,7 @@ defmodule Trot.Router do
     end
   end
 
+  @doc false
   defmacro __before_compile__(_env) do
     quote do
       @doc """
@@ -61,6 +62,10 @@ defmodule Trot.Router do
     end
   end
 
+  @doc """
+  Sets up routes from other modules my plugging into the `match/2` function
+  in the module.
+  """
   defmacro import_routes(module) do
     quote do
       defp external_match(conn, [module: unquote(module)]) do
