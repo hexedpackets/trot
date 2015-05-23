@@ -10,6 +10,7 @@ defmodule Trot.Mixfile do
      deps: deps,
      name: "Trot",
      docs: [readme: "README.md", main: "README",
+            source_ref: "v#{@version}",
             source_url: "https://github.com/hexedpackets/trot"],
 
      # Hex
