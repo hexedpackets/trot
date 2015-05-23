@@ -27,15 +27,11 @@ defmodule Trot.Router do
       @plug_builder_opts []
       Module.register_attribute(__MODULE__, :plugs, accumulate: true)
 
-      defp match(conn, _opts) do
-        Plug.Conn.put_private(conn,
-          :trot_route,
-          do_match(conn.method, Enum.map(conn.path_info, &URI.decode/1), conn.host, conn.assigns[:version]))
+      def match(conn = %Plug.Conn{state: :unset}, _opts) do
+        fun = do_match(conn.method, Enum.map(conn.path_info, &URI.decode/1), conn.host, conn.assigns[:version])
+        fun.(conn)
       end
-
-      defp dispatch(%Plug.Conn{assigns: assigns} = conn, _opts) do
-        Map.get(conn.private, :trot_route).(conn)
-      end
+      def match(conn, _opts), do: conn
 
       def init(opts), do: opts
       def call(conn, opts) do
@@ -46,6 +42,7 @@ defmodule Trot.Router do
       @path_root "/"
 
       plug Plug.Logger
+      plug :match
 
       @before_compile Trot.Router
       @before_compile Plug.Builder
@@ -54,9 +51,6 @@ defmodule Trot.Router do
 
   defmacro __before_compile__(_env) do
     quote do
-      plug :match
-      plug :dispatch
-
       @doc """
       Pass-through route that matches all parametes. This ensures that the plug
       pipeline won't die if there are more plugs after this module.
@@ -69,7 +63,10 @@ defmodule Trot.Router do
 
   defmacro import_routes(module) do
     quote do
-      plug unquote(module)
+      defp external_match(conn, [module: unquote(module)]) do
+        unquote(module).match(conn, [])
+      end
+      plug :external_match, module: unquote(module)
     end
   end
 
