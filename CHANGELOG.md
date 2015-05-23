@@ -1,4 +1,4 @@
-# 0.3.0 - UNRELEASED
+# 0.3.0 - May 23, 2015
 - Support for template rendering using EEx and/or HAML
 - Add a default root for static routes of priv/static
 - Support setting the module attribute @path_root as a prefix to route paths
