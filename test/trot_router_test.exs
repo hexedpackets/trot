@@ -1,17 +1,7 @@
 defmodule Trot.RouterTest do
   use ExUnit.Case, async: true
+  import Trot.TestHelper
 
-  @doc """
-  Calls a routing endpoint with a fake connections, then returns the connection after it has
-  gone through the server code path.
-  """
-  def call(router, verb, path, params \\ nil, headers \\ []) do
-    conn = Plug.Test.conn(verb, path, params, headers)
-    |> Plug.Conn.fetch_query_params
-    |> router.call(router.init([]))
-    assert conn.state == :sent
-    conn
-  end
 
   defmodule Router do
     use Trot.Router
@@ -41,18 +31,8 @@ defmodule Trot.RouterTest do
       @path_root "api"
       get "/status", do: :ok
     end
-
-    defmodule VersionedAPI do
-      use Trot.Router
-      use Trot.Versioning
-
-      get "/status", do: {:ok, conn.assigns[:version]}
-
-      get "/current", version: "v1", do: "o hai"
-      get "/current", version: "beta", do: :bad_request
-      get "/current", version: :any, do: :ok
-    end
   end
+
 
   test "route returns status code" do
     conn = call(Router, :get, "/status")
@@ -154,22 +134,5 @@ defmodule Trot.RouterTest do
   test "routes with module-level path prefix" do
     conn = call(Router.API, :get, "/api/status")
     assert conn.status == 200
-  end
-
-  test "routes with versioned API" do
-    conn = call(Router.VersionedAPI, :get, "/v1/status")
-    assert conn.status == 200
-    assert conn.resp_body == "v1"
-  end
-
-  test "routes that match a specific version" do
-    conn = call(Router.VersionedAPI, :get, "/v1/current")
-    assert conn.status == 200
-    assert conn.resp_body == "o hai"
-    conn = call(Router.VersionedAPI, :get, "/beta/current")
-    assert conn.status == 400
-    conn = call(Router.VersionedAPI, :get, "/v2/current")
-    assert conn.status == 200
-    assert conn.resp_body == ""
   end
 end
