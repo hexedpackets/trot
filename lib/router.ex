@@ -137,6 +137,12 @@ defmodule Trot.Router do
   def make_response({code, body}, conn) when is_number(code) and is_binary(body) do
     Plug.Conn.send_resp(conn, code, body)
   end
+  def make_response({code, body, headers}, conn) do
+    conn = headers
+    |> Enum.map(&format_header/1)
+    |> Enum.reduce(conn, fn({header, value}, conn) -> Plug.Conn.put_resp_header(conn, header, value) end)
+    make_response({code, body}, conn)
+  end
   def make_response({code, body}, conn) when is_number(code) do
     body = Poison.encode!(body)
     make_response({code, body}, conn)
@@ -240,4 +246,9 @@ defmodule Trot.Router do
 
   defp extract_path({:_, _, var}) when is_atom(var), do: "/*_path"
   defp extract_path(path), do: path
+
+  defp format_header({header, value}) do
+    name = header |> to_string |> String.downcase
+    {name, value}
+  end
 end

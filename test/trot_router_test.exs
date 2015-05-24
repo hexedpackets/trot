@@ -21,6 +21,8 @@ defmodule Trot.RouterTest do
     get "/redirect", do: {:redirect, "/text"}
     get "/template/eex/:text", do: render_template("index.html.eex", [body: text])
     get "/template/haml/:text", do: render_template("index.html.haml", [body: text])
+    get "/headers/keyword", do: {:ok, "", ["x-test-header": "disrupt"]}
+    get "/headers/dict", do: {:ok, "", %{"x-test-header" => "disrupt"}}
 
     redirect "/macro_redirect", "/status"
     static "/static", "/"
@@ -129,5 +131,19 @@ defmodule Trot.RouterTest do
   test "routes with module-level path prefix" do
     conn = call(Router.API, :get, "/api/status")
     assert conn.status == 200
+  end
+
+  test "keyword list of headers returned from route" do
+    conn = call(Router, :get, "/headers/keyword")
+    assert conn.status == 200
+    header = conn |> Plug.Conn.get_resp_header("x-test-header") |> List.first
+    assert header == "disrupt"
+  end
+
+  test "dict of headers returned from route" do
+    conn = call(Router, :get, "/headers/dict")
+    assert conn.status == 200
+    header = conn |> Plug.Conn.get_resp_header("x-test-header") |> List.first
+    assert header == "disrupt"
   end
 end
