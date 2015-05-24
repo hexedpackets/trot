@@ -12,6 +12,7 @@ All of the following are valid return values from handlers and will be parsed in
 - String of response body
 - Status code, either numeric or an atom from `Plug.Conn.Status`
 - `{code, body}`
+- `{code, body, headers}`
 - JSONable object
 - `{code, object}`
 - `{:redirect, location}`
