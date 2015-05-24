@@ -26,6 +26,8 @@ defmodule Trot.NotFound do
   def init(opts), do: opts
   def call(conn, opts), do: not_found(conn, opts)
 
+  def match(conn, opts), do: not_found(conn, opts)
+
   @doc """
   Takes a Plug.Conn and sends a "not found" message to the requestor.
   """
