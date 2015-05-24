@@ -4,8 +4,8 @@ defmodule Trot.VersioningTest do
 
 
   defmodule VersionedRouter do
-    use Trot.Router
     use Trot.Versioning
+    use Trot.Router
 
     get "/status", do: {:ok, conn.assigns[:version]}
 

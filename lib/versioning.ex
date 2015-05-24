@@ -10,8 +10,8 @@ defmodule Trot.Versioning do
   ## Example
 
       defmodele SickAPI do
-        use Trot.Router
         use Trot.Versioning
+        use Trot.Router
 
         get "/sweet_endpoint", version: "beta" do
           {:bad_request, "Naw man, that's not ready yet."}
@@ -34,6 +34,10 @@ defmodule Trot.Versioning do
     quote do
       import Plug.Builder, only: [plug: 1]
       import Trot.Versioning, only: [version: 2]
+
+      @behaviour Plug
+      @plug_builder_opts []
+      Module.register_attribute(__MODULE__, :plugs, accumulate: true)
 
       plug :version
     end
