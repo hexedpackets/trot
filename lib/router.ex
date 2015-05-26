@@ -28,7 +28,8 @@ defmodule Trot.Router do
       Module.register_attribute(__MODULE__, :plugs, accumulate: true)
 
       def match(conn = %Plug.Conn{state: :unset}, _opts) do
-        fun = do_match(conn.method, Enum.map(conn.path_info, &URI.decode/1), conn.host, conn.assigns[:version])
+        headers = conn.req_headers |> Enum.into(%{})
+        fun = do_match(conn.method, Enum.map(conn.path_info, &URI.decode/1), conn.host, headers, conn.assigns[:version])
         fun.(conn)
       end
       def match(conn, _opts), do: conn
@@ -56,7 +57,7 @@ defmodule Trot.Router do
       Pass-through route that matches all parametes. This ensures that the plug
       pipeline won't die if there are more plugs after this module.
       """
-      def do_match(_method, _path, _host, _version) do
+      def do_match(_method, _path, _host, _headers, _version) do
         fn(conn) -> conn end
       end
     end
@@ -226,8 +227,9 @@ defmodule Trot.Router do
       {path, guards} = Trot.Router.extract_path_and_guards(path)
       {method, match, host, guards} = Plug.Router.__route__(method, path, guards, options)
       version = Trot.Versioning.build_version_match(options[:version])
+      headers = Trot.Router.extract_headers(options[:headers])
 
-      def do_match(unquote(method), unquote(match), unquote(host), unquote(version)) when unquote(guards) do
+      def do_match(unquote(method), unquote(match), unquote(host), unquote(headers), unquote(version)) when unquote(guards) do
         fn var!(conn) -> unquote(body) |> Trot.Router.make_response(var!(conn)) end
       end
     end
@@ -237,6 +239,23 @@ defmodule Trot.Router do
 
   defp default_keyword(item = {_key, _value}), do: item
   defp default_keyword(key) when is_atom(key), do: {key, true}
+
+  @doc """
+  Extracts the request headers to be used in route matches.
+  """
+  def extract_headers(nil), do: quote do: %{}
+  def extract_headers(headers) do
+    match = headers
+    |> Enum.map(fn({header, value}) -> {format_header_name(header), value} end)
+    |> Enum.into(%{})
+    Macro.escape(match)
+  end
+
+  defp format_header_name(name) do
+    name
+    |> to_string
+    |> String.downcase
+  end
 
   @doc """
   Extract the path and guards from the path.

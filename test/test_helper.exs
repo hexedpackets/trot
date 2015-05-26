@@ -8,8 +8,9 @@ defmodule Trot.TestHelper do
   Calls a routing endpoint with a fake connections, then returns the connection after it has
   gone through the server code path.
   """
-  def call(router, verb, path, params \\ nil, headers \\ []) do
-    conn = Plug.Test.conn(verb, path, params, headers)
+  def call(router, method, path, params \\ nil, headers \\ []) do
+    conn = %Plug.Conn{req_headers: headers}
+    |> Plug.Adapters.Test.Conn.conn(method, path, params)
     |> Plug.Conn.fetch_query_params
     |> router.call(router.init([]))
     assert conn.state == :sent

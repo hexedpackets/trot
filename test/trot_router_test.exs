@@ -11,6 +11,7 @@ defmodule Trot.RouterTest do
 
     get "/status", do: 200
     get "/status_atom", do: :bad_request
+    get "/text", [headers: %{"x-content-type" => "do it for the"}], do: {200, "lulz"}
     get "/text", do: "Thank you for your question."
     get "/text/body", do: {201, "Thank you for your question."}
     get "/json", do: %{"hyper" => "social"}
@@ -46,6 +47,12 @@ defmodule Trot.RouterTest do
     conn = call(Router, :get, "/status_atom")
     assert conn.status == 400
     assert conn.resp_body == ""
+  end
+
+  test "route matches on request headers" do
+    conn = call(Router, :get, "/text", nil, %{"x-content-type" => "do it for the"})
+    assert conn.status == 200
+    assert conn.resp_body == "lulz"
   end
 
   test "route returns text" do
