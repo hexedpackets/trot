@@ -1,6 +1,7 @@
 defmodule Trot.RouterTest do
   use ExUnit.Case, async: true
   import Trot.TestHelper
+  doctest Trot.Router
 
 
   defmodule Router do
@@ -11,7 +12,8 @@ defmodule Trot.RouterTest do
 
     get "/status", do: 200
     get "/status_atom", do: :bad_request
-    get "/text", [headers: %{"x-content-type" => "do it for the"}], do: {200, "lulz"}
+    get "/text", headers: %{"x-content-type" => "do it for the"}, do: {200, "lulz"}
+    get "/text", host: "bacon.io", do: {200, "wrapped scallops"}
     get "/text", do: "Thank you for your question."
     get "/text/body", do: {201, "Thank you for your question."}
     get "/json", do: %{"hyper" => "social"}
@@ -53,6 +55,12 @@ defmodule Trot.RouterTest do
     conn = call(Router, :get, "/text", nil, %{"x-content-type" => "do it for the"})
     assert conn.status == 200
     assert conn.resp_body == "lulz"
+  end
+
+  test "route matches on host" do
+    conn = call(Router, :get, "http://bacon.io/text")
+    assert conn.status == 200
+    assert conn.resp_body == "wrapped scallops"
   end
 
   test "route returns text" do

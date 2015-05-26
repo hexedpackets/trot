@@ -28,8 +28,8 @@ defmodule Trot.Router do
       Module.register_attribute(__MODULE__, :plugs, accumulate: true)
 
       def match(conn = %Plug.Conn{state: :unset}, _opts) do
-        match_opts = conn.req_headers |> Enum.into(%{}) |> Dict.merge(conn.assigns)
-        fun = do_match(conn.method, Enum.map(conn.path_info, &URI.decode/1), conn.host, match_opts)
+        matcher = conn.req_headers |> Enum.into(%{}) |> Dict.merge(conn.assigns) |> Dict.put(:host, conn.host)
+        fun = do_match(conn.method, Enum.map(conn.path_info, &URI.decode/1), matcher)
         fun.(conn)
       end
       def match(conn, _opts), do: conn
@@ -57,7 +57,7 @@ defmodule Trot.Router do
       Pass-through route that matches all parametes. This ensures that the plug
       pipeline won't die if there are more plugs after this module.
       """
-      def do_match(_method, _path, _host, _opts) do
+      def do_match(_method, _path, _matcher) do
         fn(conn) -> conn end
       end
     end
@@ -225,14 +225,15 @@ defmodule Trot.Router do
 
       path = Path.join(@path_root, expr)
       {path, guards} = Trot.Router.extract_path_and_guards(path)
-      {method, match, host, guards} = Plug.Router.__route__(method, path, guards, options)
+      {method, match, _host, guards} = Plug.Router.__route__(method, path, guards, options)
 
       match_opts = %{}
       |> Trot.Versioning.build_version_match(options[:version])
-      |> Trot.Router.extract_headers(options[:headers])
+      |> Trot.Router.build_headers_match(options[:headers])
+      |> Trot.Router.build_host_match(options[:host])
       |> Macro.escape
 
-      def do_match(unquote(method), unquote(match), unquote(host), unquote(match_opts)) when unquote(guards) do
+      def do_match(unquote(method), unquote(match), unquote(match_opts)) when unquote(guards) do
         fn var!(conn) -> unquote(body) |> Trot.Router.make_response(var!(conn)) end
       end
     end
@@ -243,12 +244,32 @@ defmodule Trot.Router do
   defp default_keyword(item = {_key, _value}), do: item
   defp default_keyword(key) when is_atom(key), do: {key, true}
 
-  @doc """
-  Extracts the request headers to be used in route matches.
+  @doc ~S"""
+  Builds the pattern that will be used to match against the request's host.
+
+  ## Examples
+      iex> Trot.Router.build_host_match(nil)
+      %{}
+      iex> Trot.Router.build_host_match("foo.com")
+      %{host: "foo.com"}
   """
-  def extract_headers(headers), do: extract_headers(%{}, headers)
-  def extract_headers(matcher, nil), do: matcher
-  def extract_headers(matcher, headers) do
+  def build_host_match(host), do: build_host_match(%{}, host)
+  def build_host_match(matcher, nil), do: matcher
+  def build_host_match(matcher, host), do: Dict.put(matcher, :host, host)
+
+  @doc ~S"""
+  Extracts the request headers to be used in route matches. All headers are sanitized
+  to lower case strings.
+
+  ## Examples
+      iex> Trot.Router.build_headers_match(nil)
+      %{}
+      iex> Trot.Router.build_headers_match(["X-Tasty-Header": "bacon"])
+      %{"x-tasty-header" => "bacon"}
+  """
+  def build_headers_match(headers), do: build_headers_match(%{}, headers)
+  def build_headers_match(matcher, nil), do: matcher
+  def build_headers_match(matcher, headers) do
     headers
     |> Enum.map(fn({header, value}) -> {format_header_name(header), value} end)
     |> Enum.into(%{})
