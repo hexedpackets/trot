@@ -3,6 +3,11 @@ defmodule Trot.RouterTest do
   import Trot.TestHelper
   doctest Trot.Router
 
+  defmodule APIRouter do
+    use Trot.Router
+    @path_root "api"
+    get "/status", do: :ok
+  end
 
   defmodule Router do
     use Trot.Router
@@ -31,11 +36,7 @@ defmodule Trot.RouterTest do
     static "/static", "/"
     static "/default_static"
 
-    defmodule API do
-      use Trot.Router
-      @path_root "api"
-      get "/status", do: :ok
-    end
+    import_routes Trot.RouterTest.APIRouter
   end
 
 
@@ -144,7 +145,7 @@ defmodule Trot.RouterTest do
   end
 
   test "routes with module-level path prefix" do
-    conn = call(Router.API, :get, "/api/status")
+    conn = call(Router, :get, "/api/status")
     assert conn.status == 200
   end
 

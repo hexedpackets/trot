@@ -2,10 +2,18 @@
 
 Trot is an Elixir web micro-framework based on Plug and Cowboy. The goal of Trot is to make common patterns in Plug easier to use, particularly when writing APIs, without sacrificing flexibility.
 
+## Usage
+Add `use Trot.Router` to the top of your module. This will add route macros and setup the plug pipeline at compile time.
+
+
 ## Routes
-Routes are specified using one of the HTTP method macros: `get/2`, `post/2`, `put/2`, `patch/2`, `delete/2`, `options/2`. The first argument is a the path to route to, and the second argument is the block of code to execute. Examples are below.
+Routes are specified using one of the HTTP method macros: `get/3`, `post/3`, `put/3`, `patch/3`, `delete/3`, `options/3`. The first argument is a the path to route to, the second (optional) argument is a keyword list of any options to match against,  and the last argument is the block of code to execute. Examples are below.
 
 If `@path_root` is specified, it will be prefixed to all routes in that module.
+
+Routes can be setup in different modules and imported into the main router with the `import_routes/1` macro, which takes a module name as the only argument. Note that ordering matters as normal Elixir pattern matching rules apply to imported routes.
+
+A default 404 response can be enabled by putting `import_routes Trot.NotFound` or `use Trot.NotFound` at the end of the module.
 
 ### Responses
 All of the following are valid return values from handlers and will be parsed into full HTTP responses:
@@ -15,37 +23,15 @@ All of the following are valid return values from handlers and will be parsed in
 - `{code, body, headers}`
 - JSONable object
 - `{code, object}`
+- `{code, object, headers}`
 - `{:redirect, location}`
 - `%Plug.Conn{}`
-
-
-## Templates
-Some conviences are provided for using EEx, the default templating engine include with Elixir. When the application is compiled all of templates under a given path are loaded and compiled for faster rendering. A `render/2` function is generated for every template under the module attribute `@template_root`. By default, `@template_root` is "templates/".
-
-
-### Example app using templates
-
-    defmodule PiedPiper do
-      use Trot.Router
-      use Trot.Template
-      @template_root "templates/root"
-
-      get "/compression" do
-        render("compression_results.html.eex", [weissman_score: 5.2])
-      end
-    end
-
 
 ### Example router application
     defmodule SoLoMoApp.Router do
       use Trot.Router
 
-      # Sets status code to 200 with an empty body
-      get "/" do
-        200
-      end
-
-      # Returns an empty body with a status code of 404
+      # Returns an empty body with a status code of 400
       get "/bad" do
         :bad_request
       end
@@ -55,9 +41,14 @@ Some conviences are provided for using EEx, the default templating engine includ
         "Thank you for your question."
       end
 
+      # Redirect the incoming request
+      get "/text/body", headers: ["x-text-type": "question"] do
+        {:redirect, "/text"}
+      end
+
       # Sets the status code to 201 with a text body
       get "/text/body" do
-        {201, "Thank you for your question."}
+        {201, "optimal tip-to-tip efficiency"}
       end
 
       # Sets status code to 200 with a JSON-encoded body
@@ -65,23 +56,64 @@ Some conviences are provided for using EEx, the default templating engine includ
         %{"hyper" => "social"}
       end
 
-      # Sets the status code to 201 with a JSON-encoded body
-      get "/json/code" do
-        {201, %{"hyper" => "social"}}
-      end
-
-      # Set the response manually as when using Plug directly
-      get "/conn" do
-        send_resp(conn, 200, "optimal tip-to-tip efficiency")
-      end
-
       # Pattern match part of the path into a variable
       get "/presenter/:name" do
         "The presenter is #{name}"
       end
 
-      # Redirect the incoming request
-      get "/redirect" do
-        {:redirect, "/text/body"}
+      import_routes Trot.NotFound
+    end
+
+
+## Templating
+To add templating in a router, add `use Trot.Template` and set `@template_root` to the top-level directory containing your templates. By default, `@template_root` is "templates/".
+
+Trot can be used to render EEx templates (the default engine include with Elixir), HAML templates through [Calliope](https://github.com/nurugger07/calliope), or a combination of both. When the application is compiled a `render/2` function is generated for every template under `@template_root`. `render/2` expects the name of the template relative to `@template_root` as the first argument and a keyword list of variables to assign as the second argument.
+
+When `MIX_ENV=prod` all of templates are loaded and pre-compiled for faster rendering.
+
+### Example app using templates
+    defmodule PiedPiper do
+      use Trot.Router
+      use Trot.Template
+      @template_root "templates/root"
+
+      get "/compression/pied_piper" do
+        render("compression_results.html.eex", [weissman_score: 5.2])
+      end
+
+      get "/compression/nucleus" do
+        render("compression_results.html.haml", [weissman_score: 2.89])
       end
     end
+
+    # compression_results.html.eex
+    <html><body>Pied piper has a Weissman Score of <%= @weissman_score %></body></html>
+
+    # compression_results.html.haml
+    %html
+      %body Nucleaus has a Weissman Score of <%= @weissman_score %>
+
+
+## API versioning
+Adding `use Trot.Versioning` to your module will enable API version parsing and pattern matching. The first part of the path for all requests in the module is assumed to be the version. It is parsed into the `conn[:assigns]` dictionary, making it easy to access. Routes can also be configured to only match a particular version.
+
+### Example versioned app
+    defmodule Nucleus do
+      use Trot.Router
+      use Trot.Versioning
+
+      get "/version" do
+        conn.assigns[:version]
+      end
+
+      get "/current", version: "v1" do
+        :ok
+      end
+
+      get "/current" do
+        :bad_request
+      end
+    end
+
+In the above example, "/v1/version" will return "v1" as the response body. A request to "/v1/current" will return a 200 but "/v2/current" will return a 400.
