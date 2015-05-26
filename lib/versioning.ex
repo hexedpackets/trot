@@ -55,7 +55,8 @@ defmodule Trot.Versioning do
   @doc """
   Returns a quoted match against the passed in version for use in routing requests.
   """
-  def build_version_match(nil), do: quote do: _
-  def build_version_match(:any), do: quote do: _
-  def build_version_match(version), do: quote do: unquote(version)
+  def build_version_match(version), do: build_version_match(%{}, version)
+  def build_version_match(matcher, nil), do: matcher
+  def build_version_match(matcher, :any), do: matcher
+  def build_version_match(matcher, version), do: Dict.put(matcher, :version, version)
 end
