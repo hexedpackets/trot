@@ -1,4 +1,6 @@
-# 0.4.0 - UNRELEASED
+# 0.5.0 - UNRELEASED
+
+# 0.4.0 - May 26, 2015
 - Support for API versioning with pattern patching against versions
 - Made connection handling for unknown routes optional. The old behavior can be re-enabled by adding `use Trot.NotFound` to the end of a routing module.
 - Added `import_routes/1` as a new macro to help chain router modules
