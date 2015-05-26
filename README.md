@@ -28,6 +28,8 @@ All of the following are valid return values from handlers and will be parsed in
 - `%Plug.Conn{}`
 
 ### Example router application
+
+```Elixir
     defmodule SoLoMoApp.Router do
       use Trot.Router
 
@@ -63,7 +65,7 @@ All of the following are valid return values from handlers and will be parsed in
 
       import_routes Trot.NotFound
     end
-
+```
 
 ## Templating
 To add templating in a router, add `use Trot.Template` and set `@template_root` to the top-level directory containing your templates. By default, `@template_root` is "templates/".
@@ -73,6 +75,8 @@ Trot can be used to render EEx templates (the default engine include with Elixir
 When `MIX_ENV=prod` all of templates are loaded and pre-compiled for faster rendering.
 
 ### Example app using templates
+
+```Elixir
     defmodule PiedPiper do
       use Trot.Router
       use Trot.Template
@@ -93,12 +97,14 @@ When `MIX_ENV=prod` all of templates are loaded and pre-compiled for faster rend
     # compression_results.html.haml
     %html
       %body Nucleaus has a Weissman Score of <%= @weissman_score %>
-
+```
 
 ## API versioning
 Adding `use Trot.Versioning` to your module will enable API version parsing and pattern matching. The first part of the path for all requests in the module is assumed to be the version. It is parsed into the `conn[:assigns]` dictionary, making it easy to access. Routes can also be configured to only match a particular version.
 
 ### Example versioned app
+
+```Elixir
     defmodule Nucleus do
       use Trot.Router
       use Trot.Versioning
@@ -115,5 +121,6 @@ Adding `use Trot.Versioning` to your module will enable API version parsing and 
         :bad_request
       end
     end
+```
 
 In the above example, "/v1/version" will return "v1" as the response body. A request to "/v1/current" will return a 200 but "/v2/current" will return a 400.
