@@ -3,6 +3,7 @@
 - Made connection handling for unknown routes optional. The old behavior can be re-enabled by adding `use Trot.NotFound` to the end of a routing module.
 - Added `import_routes/1` as a new macro to help chain router modules
 - Allow headers to be passed as part of a route's returned tuple and parse them into the HTTP response
+- Added the ability to route requests based on HTTP request headers
 
 # 0.3.0 - May 23, 2015
 - Support for template rendering using EEx and/or HAML
