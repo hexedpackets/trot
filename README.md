@@ -70,7 +70,7 @@ All of the following are valid return values from handlers and will be parsed in
 ## Templating
 To add templating in a router, add `use Trot.Template` and set `@template_root` to the top-level directory containing your templates. By default, `@template_root` is "templates/".
 
-Trot can be used to render EEx templates (the default engine include with Elixir), HAML templates through [Calliope](https://github.com/nurugger07/calliope), or a combination of both. When the application is compiled a `render/2` function is generated for every template under `@template_root`. `render/2` expects the name of the template relative to `@template_root` as the first argument and a keyword list of variables to assign as the second argument.
+Trot can be used to render EEx templates (the default engine include with Elixir), HAML templates through [Calliope](https://github.com/nurugger07/calliope), or a combination of both. When the application is compiled a `render_template/2` function is generated for every template under `@template_root`. `render_template/2` expects the name of the template relative to `@template_root` as the first argument and a keyword list of variables to assign as the second argument.
 
 When `MIX_ENV=prod` all of templates are loaded and pre-compiled for faster rendering.
 
@@ -83,11 +83,11 @@ When `MIX_ENV=prod` all of templates are loaded and pre-compiled for faster rend
       @template_root "templates/root"
 
       get "/compression/pied_piper" do
-        render("compression_results.html.eex", [weissman_score: 5.2])
+        render_template("compression_results.html.eex", [weissman_score: 5.2])
       end
 
       get "/compression/nucleus" do
-        render("compression_results.html.haml", [weissman_score: 2.89])
+        render_template("compression_results.html.haml", [weissman_score: 2.89])
       end
     end
 
