@@ -32,6 +32,10 @@ defmodule Trot.RouterTest do
     get "/headers/keyword", do: {:ok, "", ["x-test-header": "disrupt"]}
     get "/headers/dict", do: {:ok, "", %{"x-test-header" => "disrupt"}}
 
+    # badrpc tests
+    get "/badrpc", do: {:badrpc, :nodedown}
+    get "/badrpc/nested", do: {:badrpc, {%Protocol.UndefinedError{description: nil, protocol: Enumerable, value: ""}}}
+
     redirect "/macro_redirect", "/status"
     static "/static", "/"
     static "/default_static"
@@ -98,6 +102,24 @@ defmodule Trot.RouterTest do
     conn = call(Router, :get, "/conn")
     assert conn.status == 200
     assert conn.resp_body == "optimal tip-to-tip efficiency"
+  end
+
+  test "route passes path variable" do
+    conn = call(Router, :get, "/presenter/erlich")
+    assert conn.status == 200
+    assert conn.resp_body == "The presenter is erlich"
+  end
+
+  test "route returns a bad rpc call" do
+    conn = call(Router, :get, "/badrpc")
+    assert conn.status == 500
+    assert conn.resp_body == ":nodedown"
+  end
+
+  test "route returns a bad rpc call with a nested error message" do
+    conn = call(Router, :get, "/badrpc/nested")
+    assert conn.status == 500
+    assert conn.resp_body == ~S'{%Protocol.UndefinedError{description: nil, protocol: Enumerable, value: ""}}'
   end
 
   test "route passes path variable" do
