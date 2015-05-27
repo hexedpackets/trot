@@ -1,4 +1,11 @@
 defmodule Trot do
+  use Application
+
+  @doc false
+  def start(_type, _args) do
+    Trot.Supervisor.start_link
+  end
+
   @http_methods [:get, :post, :put, :patch, :delete, :options]
 
   defmacro is_http_method(thing) do

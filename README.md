@@ -3,7 +3,13 @@
 Trot is an Elixir web micro-framework based on Plug and Cowboy. The goal of Trot is to make common patterns in Plug easier to use, particularly when writing APIs, without sacrificing flexibility.
 
 ## Usage
-Put `use Trot.Router` to the top of your module. This will add route macros and setup the plug pipeline at compile time. Start Cowboy by adding `Plug.Adapters.Cowboy.child_spec(:http, YourModule.Router, [], [port: 4000])` to the list of children in your supervisor.
+Add `{:trot, github: "hexedpackets/trot"}` to the dependencies and `:trot` to the list of applications in your "mix.exs" file.
+
+The following configuration options are supported by the server:
+`config :trot, :port, 4000`: port to listen on for incoming HTTP requests. Defaults to "4000".
+`config :trot, :router, MyApp.Router`: module to route requests to. Defaults to "Trot.NotFound".
+
+Finally, put `use Trot.Router` to the top of your module. This will add route macros and setup the plug pipeline at compile time.
 
 
 ## Routes
