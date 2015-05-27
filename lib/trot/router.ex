@@ -131,6 +131,14 @@ defmodule Trot.Router do
   end
   def make_response(conn = %Plug.Conn{}, _conn), do: conn
   def make_response({:redirect, to}, conn), do: do_redirect(to, conn)
+  def make_response({:badrpc, {:EXIT, {reason, _metadata}}}, conn) do
+    Logger.warn("Bad RPC error: #{inspect reason}")
+    make_response({:internal_server_error, inspect(reason)}, conn)
+  end
+  def make_response({:badrpc, reason}, conn) do
+    Logger.warn("Bad RPC error: #{inspect reason}")
+    make_response({:internal_server_error, inspect(reason)}, conn)
+  end
   def make_response(body, conn) when is_binary(body), do: make_response({:ok, body}, conn)
   def make_response(code, conn) when is_number(code), do: make_response({code, ""}, conn)
   def make_response(code, conn) when is_atom(code), do: make_response({Status.code(code), ""}, conn)
