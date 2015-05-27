@@ -31,6 +31,7 @@ All of the following are valid return values from handlers and will be parsed in
 - `{code, object}`
 - `{code, object, headers}`
 - `{:redirect, location}`
+- `{:badrpc, error}`
 - `%Plug.Conn{}`
 
 ### Example router application
