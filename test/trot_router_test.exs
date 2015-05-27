@@ -184,4 +184,10 @@ defmodule Trot.RouterTest do
     header = conn |> Plug.Conn.get_resp_header("x-test-header") |> List.first
     assert header == "disrupt"
   end
+
+  test "default heartbeat route" do
+    conn = call(Router, :get, "/heartbeat")
+    assert conn.status == 200
+    assert conn.resp_body == "OK"
+  end
 end

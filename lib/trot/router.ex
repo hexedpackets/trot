@@ -43,6 +43,7 @@ defmodule Trot.Router do
       @path_root "/"
 
       plug Plug.Logger
+      plug PlugHeartbeat
       plug :match
 
       @before_compile Trot.Router

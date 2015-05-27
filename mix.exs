@@ -29,6 +29,7 @@ defmodule Trot.Mixfile do
       {:cowboy, "~> 1.0"},
       {:poison, "~> 1.4"},
       {:calliope, "~> 0.3.0"},
+      {:plug_heartbeat, "~> 0.1"},
       {:earmark, "~> 0.1", only: :dev},
       {:ex_doc, "~> 0.7", only: :dev},
       {:inch_ex, only: :docs},
