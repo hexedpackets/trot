@@ -1,4 +1,9 @@
 defmodule Trot do
+  @moduledoc """
+  Main Trot application. When added to a projects application list, Trot.Supervisor will be started.
+  Also contains some generic parsing functions.
+  """
+
   use Application
 
   @doc false
@@ -8,9 +13,12 @@ defmodule Trot do
 
   @http_methods [:get, :post, :put, :patch, :delete, :options]
 
+  @doc """
+  Returns a boolean indicating whether the passed in atom is a valid HTTP method.
+  """
   defmacro is_http_method(thing) do
     quote do
-      is_atom(unquote(thing)) and unquote(thing) in @http_methods
+      is_atom(unquote(thing)) and unquote(thing) in unquote(@http_methods)
     end
   end
 

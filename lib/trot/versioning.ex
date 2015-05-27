@@ -52,10 +52,22 @@ defmodule Trot.Versioning do
     |> Map.put(:path_info, path)
   end
 
-  @doc """
+  @doc ~S"""
   Returns a quoted match against the passed in version for use in routing requests.
+
+  ## Examples:
+      iex> Trot.Versioning.build_version_match(nil)
+      %{}
+      iex> Trot.Versioning.build_version_match(:any)
+      %{}
+      iex> Trot.Versioning.build_version_match("v1")
+      %{version: "v1"}
   """
   def build_version_match(version), do: build_version_match(%{}, version)
+
+  @doc """
+  Same as `build_version_match/1` but with an existing dictionary of match options passed in.
+  """
   def build_version_match(matcher, nil), do: matcher
   def build_version_match(matcher, :any), do: matcher
   def build_version_match(matcher, version), do: Dict.put(matcher, :version, version)

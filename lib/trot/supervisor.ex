@@ -1,10 +1,12 @@
 defmodule Trot.Supervisor do
   use Supervisor
 
+  @doc false
   def start_link do
     Supervisor.start_link(__MODULE__, [], name: __MODULE__)
   end
 
+  @doc false
   def init([]) do
     port = Application.get_env(:trot, :port, 4000)
     router_module = Application.get_env(:trot, :router, Trot.NotFound)

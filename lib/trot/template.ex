@@ -64,14 +64,24 @@ defmodule Trot.Template do
     files
     |> Enum.map(&(compile({&1, Path.extname(&1)}, root, pre_compile_templates)))
   end
+
+  @doc """
+  Compiles the quoted expression used to render an EEx template from disk.
+  """
   def compile({file, ".eex"}, root, _pre_compile = false) do
     block = quote do: EEx.eval_file(unquote(file), assigns: var!(assigns))
     _compile(file, root, block)
   end
+  @doc """
+  Compiles an EEx template into a quoted expression in memory for faster rendering.
+  """
   def compile({file, ".eex"}, root, _pre_compile = true) do
     block = EEx.compile_file(file)
     _compile(file, root, block)
   end
+  @doc """
+  Compiles the quoted expression used to render an HAML template from disk.
+  """
   def compile({file, ".haml"}, root, _pre_compile = false) do
     block = quote do
       Calliope.Engine.precompile_view(unquote(file))
@@ -79,6 +89,9 @@ defmodule Trot.Template do
     end
     _compile(file, root, block)
   end
+  @doc """
+  Compiles a HAML template into a quoted expression in memory for faster rendering.
+  """
   def compile({file, ".haml"}, root, _pre_compile = true) do
     template = Calliope.Engine.precompile_view(file)
     block = quote do: Calliope.Render.eval(unquote(template), assigns: var!(assigns))

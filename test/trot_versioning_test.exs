@@ -1,6 +1,7 @@
 defmodule Trot.VersioningTest do
   use ExUnit.Case, async: true
   import Trot.TestHelper
+  doctest Trot.Versioning
 
 
   defmodule VersionedRouter do

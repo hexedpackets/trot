@@ -262,6 +262,10 @@ defmodule Trot.Router do
       %{host: "foo.com"}
   """
   def build_host_match(host), do: build_host_match(%{}, host)
+
+  @doc """
+  Same as `build_host_match/1` but with an existing dictionary of match options passed in.
+  """
   def build_host_match(matcher, nil), do: matcher
   def build_host_match(matcher, host), do: Dict.put(matcher, :host, host)
 
@@ -276,6 +280,10 @@ defmodule Trot.Router do
       %{"x-tasty-header" => "bacon"}
   """
   def build_headers_match(headers), do: build_headers_match(%{}, headers)
+
+  @doc """
+  Same as `build_headers_match/1` but with an existing dictionary of match options passed in.
+  """
   def build_headers_match(matcher, nil), do: matcher
   def build_headers_match(matcher, headers) do
     headers
@@ -291,7 +299,7 @@ defmodule Trot.Router do
   end
 
   @doc """
-  Extract the path and guards from the path.
+  Extract the path and any guard statements from the path. Guard statements defaults to `true`.
   """
   def extract_path_and_guards({:when, _, [path, guards]}), do: {extract_path(path), guards}
   def extract_path_and_guards(path), do: {extract_path(path), true}

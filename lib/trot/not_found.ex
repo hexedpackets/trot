@@ -23,15 +23,25 @@ defmodule Trot.NotFound do
     end
   end
 
+  @doc false
   def init(opts), do: opts
+
+  @doc false
   def call(conn, opts), do: not_found(conn, opts)
 
+  @doc """
+  When using `import_routes`, `match/2` is used as the Plug function. Simply passes on to `not_found/2`.
+  """
   def match(conn, opts), do: not_found(conn, opts)
+
+  @doc """
+  See `not_found/2`.
+  """
+  def not_found(conn), do: not_found(conn, [])
 
   @doc """
   Takes a Plug.Conn and sends a "not found" message to the requestor.
   """
-  def not_found(conn), do: not_found(conn, [])
   def not_found(conn = %Plug.Conn{state: :unset}, _opts) do
     Plug.Conn.send_resp(conn, Plug.Conn.Status.code(:not_found), "<html><body>Not Found</body></html>")
   end
