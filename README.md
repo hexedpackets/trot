@@ -4,11 +4,24 @@
 Trot is an Elixir web micro-framework based on Plug and Cowboy. The goal of Trot is to make common patterns in Plug easier to use, particularly when writing APIs, without sacrificing flexibility.
 
 ## Usage
-Add `{:trot, github: "hexedpackets/trot"}` to the dependencies and `:trot` to the list of applications in your "mix.exs" file.
+Add Trot as a dependency to your `mix.exs` file and update your applications list to include it.
+
+```Elixir
+    defp deps do
+      [{:trot, github: "hexedpackets/trot"}]
+    end
+    
+    def application do
+      [applications: [:trot]]
+    end
+```
 
 The following configuration options are supported by the server:
+
 `config :trot, :port, 4000`: port to listen on for incoming HTTP requests. Defaults to "4000".
+
 `config :trot, :router, MyApp.Router`: module to route requests to. Defaults to "Trot.NotFound".
+
 `config :trot, :heartbeat, "/heartbeat"`: path to setup a heartbeat route. This will always return 200 with a body of "OK". Defaults to "/heartbeat".
 
 Finally, put `use Trot.Router` to the top of your module. This will add route macros and setup the plug pipeline at compile time.
