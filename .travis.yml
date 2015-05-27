@@ -4,3 +4,6 @@ elixir:
 sudo: false # to use faster container based build environment
 otp_release:
   - 17.3
+after_script:
+  - MIX_ENV=docs mix deps.get
+  - MIX_ENV=docs mix inch.report

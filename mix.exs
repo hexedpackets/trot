@@ -28,9 +28,10 @@ defmodule Trot.Mixfile do
       {:plug, "~> 0.12"},
       {:cowboy, "~> 1.0"},
       {:poison, "~> 1.4"},
+      {:calliope, "~> 0.3.0"},
       {:earmark, "~> 0.1", only: :dev},
       {:ex_doc, "~> 0.7", only: :dev},
-      {:calliope, "~> 0.3.0"},
+      {:inch_ex, only: :docs},
     ]
   end
 
