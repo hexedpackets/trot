@@ -9,6 +9,7 @@ Add `{:trot, github: "hexedpackets/trot"}` to the dependencies and `:trot` to th
 The following configuration options are supported by the server:
 `config :trot, :port, 4000`: port to listen on for incoming HTTP requests. Defaults to "4000".
 `config :trot, :router, MyApp.Router`: module to route requests to. Defaults to "Trot.NotFound".
+`config :trot, :heartbeat, "/heartbeat"`: path to setup a heartbeat route. This will always return 200 with a body of "OK". Defaults to "/heartbeat".
 
 Finally, put `use Trot.Router` to the top of your module. This will add route macros and setup the plug pipeline at compile time.
 
