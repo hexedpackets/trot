@@ -7,6 +7,8 @@ defmodule Trot.LiveReload do
   If a module is reloaded, a redirect is sent to the client for the same location,
   allowing the whole plug pipeline to be used with the new code. All further
   processing on the original request is halted.
+  
+  Modified from https://github.com/sugar-framework/plugs/blob/master/lib/sugar/plugs/hot_code_reload.ex
   """
 
   @behaviour Plug
