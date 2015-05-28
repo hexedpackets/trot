@@ -2,6 +2,7 @@
 - Start Cowboy automatically based on configured values in the application
 - Support parsing RPC errors into HTTP responses
 - Added default route for `/heartbeat`
+- Added live code reloading in dev
 
 # 0.4.0 - May 26, 2015
 - Support for API versioning with pattern patching against versions

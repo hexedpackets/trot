@@ -10,7 +10,7 @@ Add Trot as a dependency to your `mix.exs` file and update your applications lis
     defp deps do
       [{:trot, github: "hexedpackets/trot"}]
     end
-    
+
     def application do
       [applications: [:trot]]
     end
