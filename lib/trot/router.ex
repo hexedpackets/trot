@@ -42,7 +42,7 @@ defmodule Trot.Router do
       @static_root Path.relative_to_cwd("priv/static")
       @path_root "/"
 
-      plug Sugar.Plugs.HotCodeReload
+      plug Trot.LiveReload
       plug Plug.Logger
       plug PlugHeartbeat, path: Application.get_env(:trot, :heartbeat, "/heartbeat")
       plug :match
