@@ -3,8 +3,10 @@
   "cowlib": {:hex, :cowlib, "1.0.1"},
   "earmark": {:hex, :earmark, "0.1.17"},
   "ex_doc": {:hex, :ex_doc, "0.7.2"},
+  "fs": {:hex, :fs, "0.9.2"},
   "inch_ex": {:hex, :inch_ex, "0.3.1"},
   "plug": {:hex, :plug, "0.12.2"},
   "plug_heartbeat": {:hex, :plug_heartbeat, "0.1.0"},
+  "plugs": {:hex, :plugs, "0.0.3"},
   "poison": {:hex, :poison, "1.4.0"},
   "ranch": {:hex, :ranch, "1.0.0"}}
