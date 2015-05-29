@@ -20,7 +20,7 @@ defmodule Trot.Template do
       end
   """
 
-  @extensions [:eex, :haml]
+  @engines [eex: Trot.Template.EEx, haml: Trot.Template.HAML]
 
   @doc false
   defmacro __using__(_opts) do
@@ -62,43 +62,25 @@ defmodule Trot.Template do
   """
   def compile(files, root) when is_list(files) do
     files
-    |> Enum.map(&(compile({&1, Path.extname(&1)}, root, pre_compile_templates)))
+    |> Enum.map(&(compile(&1, template_engine(&1), root, Mix.env)))
   end
 
   @doc """
-  Compiles the quoted expression used to render an EEx template from disk.
+  Compiles the quoted expression used to render a template from disk.
   """
-  def compile({file, ".eex"}, root, _pre_compile = false) do
-    block = quote do: EEx.eval_file(unquote(file), assigns: var!(assigns))
-    _compile(file, root, block)
+  def compile(file, module, root, :dev) do
+    module.compile(file)
+    |> _compile(file, root)
   end
   @doc """
-  Compiles an EEx template into a quoted expression in memory for faster rendering.
+  Compiles a template into a quoted expression in memory for faster rendering.
   """
-  def compile({file, ".eex"}, root, _pre_compile = true) do
-    block = EEx.compile_file(file)
-    _compile(file, root, block)
-  end
-  @doc """
-  Compiles the quoted expression used to render an HAML template from disk.
-  """
-  def compile({file, ".haml"}, root, _pre_compile = false) do
-    block = quote do
-      Calliope.Engine.precompile_view(unquote(file))
-      |> Calliope.Render.eval(assigns: var!(assigns))
-    end
-    _compile(file, root, block)
-  end
-  @doc """
-  Compiles a HAML template into a quoted expression in memory for faster rendering.
-  """
-  def compile({file, ".haml"}, root, _pre_compile = true) do
-    template = Calliope.Engine.precompile_view(file)
-    block = quote do: Calliope.Render.eval(unquote(template), assigns: var!(assigns))
-    _compile(file, root, block)
+  def compile(file, module, root, _env) do
+    module.full_compile(file)
+    |> _compile(file, root)
   end
 
-  defp _compile(file, root, block) do
+  defp _compile(block, file, root) do
     file_match = Path.relative_to(file, root)
     quote do
       def render_template(unquote(file_match), var!(assigns)) do
@@ -112,7 +94,7 @@ defmodule Trot.Template do
   """
   def find_all(nil), do: []
   def find_all(root) do
-    extensions = Enum.join(@extensions, ",")
+    extensions = @engines |> Keyword.keys |> Enum.join(",")
     Path.join(root, "**.{#{extensions}}")
     |> Path.wildcard
   end
@@ -127,7 +109,18 @@ defmodule Trot.Template do
     |> :erlang.md5
   end
 
-  defp pre_compile_templates do
-    Application.get_env(:mix, :env) != :dev
+  @doc """
+  Determine which template module to use based a template's file extension.
+  """
+  def template_engine(file) do
+    ext = extract_extension(file)
+    Keyword.get(@engines, ext)
+  end
+
+  defp extract_extension(file) do
+    file
+    |> Path.extname
+    |> String.lstrip(?.)
+    |> String.to_atom
   end
 end
