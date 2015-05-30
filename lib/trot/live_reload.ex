@@ -7,7 +7,7 @@ defmodule Trot.LiveReload do
   If a module is reloaded, a redirect is sent to the client for the same location,
   allowing the whole plug pipeline to be used with the new code. All further
   processing on the original request is halted.
-  
+
   Modified from https://github.com/sugar-framework/plugs/blob/master/lib/sugar/plugs/hot_code_reload.ex
   """
 
@@ -17,18 +17,20 @@ defmodule Trot.LiveReload do
   def init(opts), do: opts
 
   @doc false
-  def call(conn, _opts) do
-    case reload(Mix.env) do
-      :ok ->
-        location = "/" <> Enum.join(conn.path_info, "/")
-        conn
-          |> Plug.Conn.put_resp_header("Location", location)
-          |> Plug.Conn.send_resp(302, "")
-          |> Plug.Conn.halt
-      _   -> conn
-    end
-  end
+  def call(conn, [env: :dev]), do: reload |> check_reload(conn)
+  def call(conn, opts), do: conn
 
-  defp reload(:dev), do: Mix.Tasks.Compile.Elixir.run([])
-  defp reload(_), do: :noreload
+  @doc """
+  Recompiles any modules that have changed.
+  """
+  def reload, do: Mix.Tasks.Compile.Elixir.run([])
+
+  defp check_reload(:ok, conn) do
+    location = "/" <> Enum.join(conn.path_info, "/")
+    conn
+      |> Plug.Conn.put_resp_header("Location", location)
+      |> Plug.Conn.send_resp(302, "")
+      |> Plug.Conn.halt
+  end
+  defp check_reload(_, conn), do: conn
 end
