@@ -1,4 +1,4 @@
-# 0.5.0 - UNRELEASED
+# 0.5.0 - June 2, 2015
 - Start Cowboy automatically based on configured values in the application
 - Support parsing RPC errors into HTTP responses
 - Added default route for `/heartbeat`
