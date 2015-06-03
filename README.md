@@ -1,5 +1,5 @@
 # trot
-[![Hex.pm](https://img.shields.io/hexpm/v/plug.svg)](https://hex.pm/packages/trot) [![Build Status](https://travis-ci.org/hexedpackets/trot.svg?branch=master)](https://travis-ci.org/hexedpackets/trot) [![Inline docs](http://inch-ci.org/github/hexedpackets/trot.svg)](http://inch-ci.org/github/hexedpackets/trot)
+[![Hex.pm](https://img.shields.io/hexpm/v/trot.svg)](https://hex.pm/packages/trot) [![Build Status](https://travis-ci.org/hexedpackets/trot.svg?branch=master)](https://travis-ci.org/hexedpackets/trot) [![Inline docs](http://inch-ci.org/github/hexedpackets/trot.svg)](http://inch-ci.org/github/hexedpackets/trot)
 
 Trot is an Elixir web micro-framework based on Plug and Cowboy. The goal of Trot is to make common patterns in Plug easier to use, particularly when writing APIs, without sacrificing flexibility.
 
