@@ -1,7 +1,7 @@
 defmodule Trot.Mixfile do
   use Mix.Project
 
-  @version "0.6.0"
+  @version File.read!("VERSION") |> String.strip
 
   def project do
     [app: :trot,
