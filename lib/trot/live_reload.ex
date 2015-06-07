@@ -18,7 +18,7 @@ defmodule Trot.LiveReload do
 
   @doc false
   def call(conn, [env: :dev]), do: reload |> check_reload(conn)
-  def call(conn, opts), do: conn
+  def call(conn, _opts), do: conn
 
   @doc """
   Recompiles any modules that have changed.
