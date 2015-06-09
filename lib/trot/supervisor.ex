@@ -10,7 +10,10 @@ defmodule Trot.Supervisor do
   def init([]) do
     import Supervisor.Spec
 
-    port = Application.get_env(:trot, :port, 4000)
+    port = case Application.get_env(:trot, :port, 4000) do
+      port when is_binary(port) -> String.to_integer(port)
+      port -> port
+    end
     router_module = Application.get_env(:trot, :router, Trot.NotFound)
 
     children = [
