@@ -56,7 +56,7 @@ defmodule Trot.Router do
   defmacro __before_compile__(_env) do
     quote do
       @doc """
-      Pass-through route that matches all parametes. This ensures that the plug
+      Pass-through route that matches all parameters. This ensures that the plug
       pipeline won't die if there are more plugs after this module.
       """
       def do_match(_method, _path, _matcher) do
@@ -88,7 +88,7 @@ defmodule Trot.Router do
         200
       end
 
-      # Returns an empty body with a status code of 404
+      # Returns an empty body with a status code of 400
       get "/bad" do
         :bad_request
       end
