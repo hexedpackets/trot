@@ -19,7 +19,7 @@ defmodule Trot.Mixfile do
   end
 
   def application do
-    [applications: [:logger, :plug, :cowboy],
+    [applications: [:logger, :plug, :cowboy, :plug_heartbeat],
      mod: {Trot, []}]
   end
 
