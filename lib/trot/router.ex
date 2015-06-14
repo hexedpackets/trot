@@ -235,7 +235,7 @@ defmodule Trot.Router do
 
       path = Path.join(@path_root, expr)
       {path, guards} = Trot.Router.extract_path_and_guards(path)
-      {method, match, _host, guards} = Plug.Router.__route__(method, path, guards, options)
+      {method, match, guards} = Trot.Router.__route__(method, path, guards, options)
 
       match_opts = %{}
       |> Trot.Versioning.build_version_match(options[:version])
@@ -309,8 +309,35 @@ defmodule Trot.Router do
   defp extract_path({:_, _, var}) when is_atom(var), do: "/*_path"
   defp extract_path(path), do: path
 
+  # Convert the verbs given with `:via` into a variable and guard set that can
+  # be added to the dispatch clause.
+  defp build_methods([], guards) do
+    {quote(do: _), guards}
+  end
+
+  defp build_methods([method], guards) do
+    {Plug.Router.Utils.normalize_method(method), guards}
+  end
+
+  defp build_methods(methods, guards) do
+    methods = Enum.map methods, &Plug.Router.Utils.normalize_method(&1)
+    var = quote do: method
+    guards = join_guards(quote(do: unquote(var) in unquote(methods)), guards)
+    {var, guards}
+  end
+
+  defp join_guards(fst, true), do: fst
+  defp join_guards(fst, snd), do: (quote do: unquote(fst) and unquote(snd))
+
   defp format_header({header, value}) do
     name = header |> to_string |> String.downcase
     {name, value}
+  end
+
+  @doc false
+  def __route__(method, path, guards, options) do
+    {method, guards} = build_methods(List.wrap(method || options[:via]), guards)
+    {_vars, match} = Plug.Router.Utils.build_path_match(path)
+    {method, match, guards}
   end
 end
