@@ -172,7 +172,7 @@ defmodule Trot.Router do
   end
   def do_redirect(uri = %URI{}, conn) do
     conn
-    |> Plug.Conn.put_resp_header("Location", to_string(uri))
+    |> Plug.Conn.put_resp_header("location", to_string(uri))
     |> Plug.Conn.send_resp(Status.code(:temporary_redirect), "")
   end
 

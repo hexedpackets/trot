@@ -130,14 +130,14 @@ defmodule Trot.RouterTest do
 
   test "route returns redirect" do
     conn = call(Router, :get, "/redirect")
-    location = Plug.Conn.get_resp_header(conn, "Location") |> List.first
+    location = Plug.Conn.get_resp_header(conn, "location") |> List.first
     assert conn.status == 307
     assert location == "/text"
   end
 
   test "redirect macro" do
     conn = call(Router, :get, "/macro_redirect")
-    location = Plug.Conn.get_resp_header(conn, "Location") |> List.first
+    location = Plug.Conn.get_resp_header(conn, "location") |> List.first
     assert conn.status == 307
     assert location == "/status"
   end
