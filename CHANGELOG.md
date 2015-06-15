@@ -1,3 +1,6 @@
+# 0.5.2 June 14, 2015
+- Added VERSION file to hex package
+
 # 0.5.1 - June 14, 2015
 - Compatability fixed with Plug v0.13.0
 - Added `plug_heartbeat` to the list of applications for exrm releases
