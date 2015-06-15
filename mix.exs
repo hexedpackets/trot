@@ -46,6 +46,6 @@ defmodule Trot.Mixfile do
     [contributors: ["William Huba"],
      licenses: ["Apache 2.0"],
      links: %{"GitHub" => "https://github.com/hexedpackets/trot"},
-     files: ~w(mix.exs README.md LICENSE lib)]
+     files: ~w(mix.exs README.md LICENSE lib VERSION)]
   end
 end
