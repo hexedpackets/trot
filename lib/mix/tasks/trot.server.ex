@@ -1,6 +1,8 @@
 defmodule Mix.Tasks.Trot.Server do
   use Mix.Task
 
+  @shortdoc "Starts application and server"
+
   @moduledoc """
   Starts Trot application with `mix trot.server`
   ## Command line options
