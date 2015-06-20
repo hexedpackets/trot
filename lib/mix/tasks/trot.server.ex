@@ -7,6 +7,10 @@ defmodule Mix.Tasks.Trot.Server do
   end
 
   defp no_halt do
-    :timer.sleep(:infinity)
+    unless iex_running?, do: :timer.sleep(:infinity)
+  end
+
+  defp iex_running? do
+    Code.ensure_loaded?(IEx) && IEx.started?
   end
 end
