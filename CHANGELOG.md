@@ -1,3 +1,6 @@
+# 0.5.3 October 1, 2015
+- Update plug_heartbeat dependency to remove usage of deprecated function in Plug
+
 # 0.5.2 June 14, 2015
 - Added VERSION file to hex package
 
