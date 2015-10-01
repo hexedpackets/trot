@@ -43,7 +43,7 @@ defmodule Trot.Mixfile do
   end
 
   defp package do
-    [contributors: ["William Huba"],
+    [maintainers: ["William Huba"],
      licenses: ["Apache 2.0"],
      links: %{"GitHub" => "https://github.com/hexedpackets/trot"},
      files: ~w(mix.exs README.md LICENSE lib VERSION)]
