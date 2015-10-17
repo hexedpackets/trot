@@ -39,13 +39,21 @@ defmodule Trot.Router do
         plug_builder_call(conn, opts)
       end
 
+      # Determine which plugs to run before and after routing requests
+      default_pre_routing = [
+        "Elixir.Trot.LiveReload": [env: Mix.env],
+        "Elixir.Plug.Logger": [],
+        "Elixir.PlugHeartbeat": [path: Application.get_env(:trot, :heartbeat, "/heartbeat")],
+      ]
+      pre_routing = Application.get_env(:trot, :pre_routing, default_pre_routing)
+      post_routing = Application.get_env(:trot, :post_routing, [])
+
       @static_root Path.relative_to_cwd("priv/static")
       @path_root "/"
 
-      plug Trot.LiveReload, env: Mix.env
-      plug Plug.Logger
-      plug PlugHeartbeat, path: Application.get_env(:trot, :heartbeat, "/heartbeat")
+      pre_routing |> Enum.each(fn({router, args}) -> plug router, args end)
       plug :match
+      post_routing |> Enum.each(fn({router, args}) -> plug router, args end)
 
       @before_compile Trot.Router
       @before_compile Plug.Builder

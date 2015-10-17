@@ -22,7 +22,12 @@ The following configuration options are supported by the server:
 
 `config :trot, :router, MyApp.Router`: module to route requests to. Defaults to "Trot.NotFound".
 
-`config :trot, :heartbeat, "/heartbeat"`: path to setup a heartbeat route. This will always return 200 with a body of "OK". Defaults to "/heartbeat".
+`config :trot, :heartbeat, "/heartbeat"`: path to setup a heartbeat route. This will always return 200 with a body of
+"OK". Defaults to "/heartbeat". NOTE: This value will only have an effect when PlugHeartbeat is part of the plug list.
+
+`config :trot, :pre_routing, ["Elixir.CustomPlug": [plug_arg: value]]`: Plugs that should be run before routing a request along with their arguments. Defaults to setting up "Trot.LiveReload", "Plug.Logger", and "PlugHeartbeat" in that order.
+
+`config :trot, :post_routing, ["Elixir.CustomPlug": [plug_arg: value]]`: Plugs that should be run after routing a request along with their arguments. Defaults to "[]".
 
 Finally, put `use Trot.Router` to the top of your module. This will add route macros and setup the plug pipeline at compile time.
 
