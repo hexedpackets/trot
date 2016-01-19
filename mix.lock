@@ -1,10 +1,10 @@
 %{"calliope": {:hex, :calliope, "0.3.0"},
-  "cowboy": {:hex, :cowboy, "1.0.3"},
-  "cowlib": {:hex, :cowlib, "1.0.1"},
+  "cowboy": {:hex, :cowboy, "1.0.4"},
+  "cowlib": {:hex, :cowlib, "1.0.2"},
   "earmark": {:hex, :earmark, "0.1.17"},
   "ex_doc": {:hex, :ex_doc, "0.7.2"},
   "inch_ex": {:hex, :inch_ex, "0.3.3"},
-  "plug": {:hex, :plug, "0.14.0"},
+  "plug": {:hex, :plug, "1.1.0"},
   "plug_heartbeat": {:hex, :plug_heartbeat, "0.2.0"},
   "poison": {:hex, :poison, "1.4.0"},
-  "ranch": {:hex, :ranch, "1.1.0"}}
+  "ranch": {:hex, :ranch, "1.2.0"}}

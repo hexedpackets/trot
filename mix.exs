@@ -25,7 +25,7 @@ defmodule Trot.Mixfile do
 
   defp deps do
     [
-      {:plug, "~> 0.12"},
+      {:plug, "~> 1.1"},
       {:cowboy, "~> 1.0"},
       {:poison, "~> 1.4"},
       {:calliope, "~> 0.3.0"},
