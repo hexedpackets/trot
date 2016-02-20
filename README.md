@@ -126,6 +126,17 @@ When `MIX_ENV=prod` all of templates are loaded and pre-compiled for faster rend
       %body Nucleaus has a Weissman Score of <%= @weissman_score %>
 ```
 
+## Additional plugs
+The plug/2 macro is available within a Trot router, allowing any plug to be inserted into the pipeline.
+
+### Example static plug
+```Elixir
+    defmodule SoLoMoApp.Router do
+      use Trot.Router
+      plug Plug.Static, at: "/static", from: :solomoapp
+    end
+```
+
 ## API versioning
 Adding `use Trot.Versioning` to your module will enable API version parsing and pattern matching. The first part of the path for all requests in the module is assumed to be the version. It is parsed into the `conn[:assigns]` dictionary, making it easy to access. Routes can also be configured to only match a particular version.
 
