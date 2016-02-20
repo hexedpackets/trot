@@ -59,6 +59,9 @@ All of the following are valid return values from handlers and will be parsed in
 ```Elixir
     defmodule SoLoMoApp.Router do
       use Trot.Router
+      
+      # Setup a static route to priv/static/assets
+      static "/css", "assets"
 
       # Returns an empty body with a status code of 400
       get "/bad" do
@@ -124,17 +127,6 @@ When `MIX_ENV=prod` all of templates are loaded and pre-compiled for faster rend
     # compression_results.html.haml
     %html
       %body Nucleaus has a Weissman Score of <%= @weissman_score %>
-```
-
-## Additional plugs
-The plug/2 macro is available within a Trot router, allowing any plug to be inserted into the pipeline.
-
-### Example static plug
-```Elixir
-    defmodule SoLoMoApp.Router do
-      use Trot.Router
-      plug Plug.Static, at: "/static", from: :solomoapp
-    end
 ```
 
 ## API versioning
