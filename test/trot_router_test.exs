@@ -10,6 +10,10 @@ defmodule Trot.RouterTest do
   end
 
   defmodule Router do
+    use Plug.Builder
+
+    plug :begin_plug
+
     use Trot.Router
     use Trot.Template
     @template_root "test/templates"
@@ -41,6 +45,14 @@ defmodule Trot.RouterTest do
     static "/default_static"
 
     import_routes Trot.RouterTest.APIRouter
+
+    def begin_plug(conn = %{path_info: ["begin"]}, _opts) do
+      conn
+      |> Plug.Conn.put_resp_header("x-the-beginning", "where it all started")
+      |> Plug.Conn.send_resp(420, "")
+      |> Plug.Conn.halt
+    end
+    def begin_plug(conn, _), do: conn
   end
 
 
@@ -189,5 +201,11 @@ defmodule Trot.RouterTest do
     conn = call(Router, :get, "/heartbeat")
     assert conn.status == 200
     assert conn.resp_body == "OK"
+  end
+
+  test "plug added before routing" do
+    conn = call(Router, :get, "/begin")
+    assert Plug.Conn.get_resp_header(conn, "x-the-beginning") |> List.first == "where it all started"
+    assert conn.status == 420
   end
 end

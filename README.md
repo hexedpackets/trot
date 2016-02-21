@@ -59,7 +59,7 @@ All of the following are valid return values from handlers and will be parsed in
 ```Elixir
     defmodule SoLoMoApp.Router do
       use Trot.Router
-      
+
       # Setup a static route to priv/static/assets
       static "/css", "assets"
 
@@ -127,6 +127,21 @@ When `MIX_ENV=prod` all of templates are loaded and pre-compiled for faster rend
     # compression_results.html.haml
     %html
       %body Nucleaus has a Weissman Score of <%= @weissman_score %>
+```
+
+## Additional plugs
+The plug/2 macro is available within a Trot router, allowing any plug to be inserted into the pipeline. Anything after `Trot.Router` will likely have a closed connection, so most uses cases will involve pulling in `Plug.Builder` first.
+
+### Example plug before Trot
+
+```Elixir
+    defmodule SoLoMoApp.Router do
+      use Plug.Builder
+      plug Plug.RequestId
+
+      use Trot.Router
+      get "/hello", do: "hello"
+    end
 ```
 
 ## API versioning
