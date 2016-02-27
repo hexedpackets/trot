@@ -28,9 +28,9 @@ defmodule Trot.LiveReload do
   defp check_reload(:ok, conn) do
     location = "/" <> Enum.join(conn.path_info, "/")
     conn
-      |> Plug.Conn.put_resp_header("location", location)
-      |> Plug.Conn.send_resp(302, "")
-      |> Plug.Conn.halt
+    |> Plug.Conn.put_resp_header("location", location)
+    |> Plug.Conn.send_resp(302, "")
+    |> Plug.Conn.halt
   end
   defp check_reload(_, conn), do: conn
 end
