@@ -21,16 +21,23 @@ defmodule Trot.LiveReload do
   def call(conn, _opts), do: conn
 
   @doc """
-  Recompiles any modules that have changed.
+  Recompiles any modules that have changed. This is similar to how IEx handles recompilation,
+  but only for the elixir compiler.
+  https://github.com/elixir-lang/elixir/blob/v1.3.2/lib/iex/lib/iex/helpers.ex#L77
   """
-  def reload, do: Mix.Tasks.Compile.Elixir.run([])
+  def reload do
+    Mix.Task.reenable("compile.elixir")
+    Mix.Task.run("compile.elixir")
+  end
 
-  defp check_reload(:ok, conn) do
+  defp check_reload(res, conn) when is_atom(res), do: check_reload([res], conn)
+  defp check_reload([:noop | rest], conn), do: check_reload(rest, conn)
+  defp check_reload([:ok | _], conn) do
     location = "/" <> Enum.join(conn.path_info, "/")
     conn
     |> Plug.Conn.put_resp_header("location", location)
     |> Plug.Conn.send_resp(302, "")
     |> Plug.Conn.halt
   end
-  defp check_reload(_, conn), do: conn
+  defp check_reload([], conn), do: conn
 end

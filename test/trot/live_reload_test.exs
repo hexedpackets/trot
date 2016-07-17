@@ -2,10 +2,6 @@ defmodule Trot.LiveReloadTest do
   use ExUnit.Case, async: true
   import Trot.TestHelper
 
-  test "reload check normally does nothing" do
-    assert Trot.LiveReload.reload == :noop
-  end
-
   test "reloading maintains the requested URL" do
     Path.relative_to_cwd("lib/trot.ex") |> File.touch!
     conn = test_conn(:get, "/foo") |> Trot.LiveReload.call([env: :dev])

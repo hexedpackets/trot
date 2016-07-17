@@ -6,7 +6,7 @@ defmodule Trot.Mixfile do
   def project do
     [app: :trot,
      version: @version,
-     elixir: "~> 1.0",
+     elixir: "~> 1.3",
      deps: deps,
      name: "Trot",
      docs: [readme: "README.md", main: "README",
