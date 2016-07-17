@@ -134,12 +134,6 @@ defmodule Trot.RouterTest do
     assert conn.resp_body == ~S'{%Protocol.UndefinedError{description: nil, protocol: Enumerable, value: ""}}'
   end
 
-  test "route passes path variable" do
-    conn = call(Router, :get, "/presenter/erlich")
-    assert conn.status == 200
-    assert conn.resp_body == "The presenter is erlich"
-  end
-
   test "route returns redirect" do
     conn = call(Router, :get, "/redirect")
     location = Plug.Conn.get_resp_header(conn, "location") |> List.first
