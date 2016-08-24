@@ -48,7 +48,8 @@ defmodule Trot.Versioning do
   the connection.
   """
   def version(conn = %Plug.Conn{path_info: [v | path]}, _opts) do
-    Plug.Conn.assign(conn, :version, v)
+    conn
+    |> Plug.Conn.assign(:version, v)
     |> Map.put(:path_info, path)
   end
 

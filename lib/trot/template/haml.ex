@@ -8,7 +8,8 @@ defmodule Trot.Template.HAML do
   @doc false
   def compile(file) do
     quote do
-      Calliope.Engine.precompile_view(unquote(file))
+      unquote(file)
+      |> Calliope.Engine.precompile_view
       |> Calliope.Render.eval(assigns: var!(assigns))
     end
   end

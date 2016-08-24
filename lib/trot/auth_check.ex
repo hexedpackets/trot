@@ -25,8 +25,9 @@ defmodule Trot.AuthCheck do
 
   @doc false
   def init(opts) do
-    routes = Keyword.get(opts, :routes, [])
-    |> Enum.map(fn(route) -> Plug.Router.Utils.build_path_match(route) |> elem(1) end)
+    routes = opts
+    |> Keyword.get(:routes, [])
+    |> Enum.map(fn(route) -> route |> Plug.Router.Utils.build_path_match |> elem(1) end)
 
     opts
     |> Keyword.put(:routes, routes)
@@ -36,7 +37,8 @@ defmodule Trot.AuthCheck do
 
   @doc false
   def call(conn, opts) do
-    Enum.map(conn.path_info, &URI.decode/1)
+    conn.path_info
+    |> Enum.map(&URI.decode/1)
     |> check_route(opts[:routes], opts, conn)
   end
 

@@ -26,9 +26,10 @@ defmodule Trot do
   Parses a query string into a keyword list.
   """
   def parse_query_string(string) do
-    URI.query_decoder(string)
-        |> Enum.reverse
-        |> Enum.reduce([], &decode_pair(&1, &2))
+    string
+    |> URI.query_decoder
+    |> Enum.reverse
+    |> Enum.reduce([], &decode_pair(&1, &2))
   end
 
   defp decode_pair({key, nil}, acc) do

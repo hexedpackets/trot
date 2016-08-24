@@ -69,14 +69,16 @@ defmodule Trot.Template do
   Compiles the quoted expression used to render a template from disk.
   """
   def compile(file, module, root, :dev) do
-    module.compile(file)
+    file
+    |> module.compile
     |> _compile(file, root)
   end
   @doc """
   Compiles a template into a quoted expression in memory for faster rendering.
   """
   def compile(file, module, root, _env) do
-    module.full_compile(file)
+    file
+    |> module.full_compile
     |> _compile(file, root)
   end
 
@@ -95,7 +97,8 @@ defmodule Trot.Template do
   def find_all(nil), do: []
   def find_all(root) do
     extensions = @engines |> Keyword.keys |> Enum.join(",")
-    Path.join(root, "**.{#{extensions}}")
+    root
+    |> Path.join("**.{#{extensions}}")
     |> Path.wildcard
   end
 
@@ -104,7 +107,8 @@ defmodule Trot.Template do
   """
   @spec hash(String.t) :: binary
   def hash(root) do
-    find_all(root)
+    root
+    |> find_all
     |> Enum.sort
     |> :erlang.md5
   end

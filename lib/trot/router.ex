@@ -176,7 +176,7 @@ defmodule Trot.Router do
   """
   def do_redirect(path, conn) when is_binary(path) do
     Logger.info "Redirecting to #{path}"
-    URI.parse(path) |> do_redirect(conn)
+    path |> URI.parse |> do_redirect(conn)
   end
   def do_redirect(uri = %URI{}, conn) do
     conn
