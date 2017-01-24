@@ -7,15 +7,15 @@ defmodule Trot.Mixfile do
     [app: :trot,
      version: @version,
      elixir: "~> 1.2",
-     deps: deps,
+     deps: deps(),
      name: "Trot",
      docs: [readme: "README.md", main: "README",
             source_ref: "v#{@version}",
             source_url: "https://github.com/hexedpackets/trot"],
 
      # Hex
-     description: description,
-     package: package]
+     description: description(),
+     package: package()]
   end
 
   def application do
