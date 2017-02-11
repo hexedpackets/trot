@@ -28,7 +28,7 @@ defmodule Trot.Router do
       Module.register_attribute(__MODULE__, :plugs, accumulate: true)
 
       def match(conn = %Plug.Conn{state: :unset}, _opts) do
-        matcher = conn.req_headers |> Enum.into(%{}) |> Dict.merge(conn.assigns) |> Dict.put(:host, conn.host)
+        matcher = conn.req_headers |> Enum.into(%{}) |> Map.merge(conn.assigns) |> Map.put(:host, conn.host)
         fun = do_match(conn.method, Enum.map(conn.path_info, &URI.decode/1), matcher)
         fun.(conn)
       end
@@ -277,7 +277,7 @@ defmodule Trot.Router do
   Same as `build_host_match/1` but with an existing dictionary of match options passed in.
   """
   def build_host_match(matcher, nil), do: matcher
-  def build_host_match(matcher, host), do: Dict.put(matcher, :host, host)
+  def build_host_match(matcher, host), do: Map.put(matcher, :host, host)
 
   @doc ~S"""
   Extracts the request headers to be used in route matches. All headers are sanitized
@@ -299,7 +299,7 @@ defmodule Trot.Router do
     headers
     |> Enum.map(fn({header, value}) -> {format_header_name(header), value} end)
     |> Enum.into(%{})
-    |> Dict.merge(matcher)
+    |> Map.merge(matcher)
   end
 
   defp format_header_name(name) do
