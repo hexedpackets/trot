@@ -71,5 +71,5 @@ defmodule Trot.Versioning do
   """
   def build_version_match(matcher, nil), do: matcher
   def build_version_match(matcher, :any), do: matcher
-  def build_version_match(matcher, version), do: Dict.put(matcher, :version, version)
+  def build_version_match(matcher, version), do: Map.put(matcher, :version, version)
 end
