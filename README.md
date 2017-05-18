@@ -32,6 +32,14 @@ The following configuration options are supported by the server:
 Finally, put `use Trot.Router` to the top of your module. This will add route macros and setup the plug pipeline at compile time.
 
 
+## Getting started
+To get a basic devserver up and running, make sure you add a Router module in the config as described above, and then simply
+```
+$ mix trot.server
+```
+
+_Note: You can also start the server as well as an iex shell by running `iex -S mix`_
+
 ## Routes
 Routes are specified using one of the HTTP method macros: `get/3`, `post/3`, `put/3`, `patch/3`, `delete/3`, `options/3`. The first argument is a the path to route to, the second (optional) argument is a keyword list of any options to match against,  and the last argument is the block of code to execute. Examples are below.
 
