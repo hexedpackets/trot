@@ -9,7 +9,8 @@ defmodule Trot.Mixfile do
      elixir: "~> 1.4",
      deps: deps(),
      name: "Trot",
-     docs: [readme: "README.md", main: "README",
+     docs: [main: "readme",
+            extras: ["README.md"],
             source_ref: "v#{@version}",
             source_url: "https://github.com/hexedpackets/trot"],
 
@@ -31,7 +32,7 @@ defmodule Trot.Mixfile do
       {:calliope, "~> 0.4.2"},
       {:plug_heartbeat, "~> 0.2"},
       {:earmark, "~> 1.2", only: :dev},
-      {:ex_doc, "~> 0.16", only: :dev},
+      {:ex_doc, "~> 0.16", only: :dev, runtime: false},
       {:inch_ex, ">= 0.0.0", only: :docs},
       {:credo, "~> 0.8", only: [:dev, :test]},
     ]
