@@ -6,7 +6,7 @@ defmodule Trot.Mixfile do
   def project do
     [app: :trot,
      version: @version,
-     elixir: "~> 1.2",
+     elixir: "~> 1.4",
      deps: deps(),
      name: "Trot",
      docs: [readme: "README.md", main: "README",
@@ -25,15 +25,15 @@ defmodule Trot.Mixfile do
 
   defp deps do
     [
-      {:plug, "~> 1.1"},
-      {:cowboy, "~> 1.0"},
-      {:poison, "~> 1.4"},
-      {:calliope, "~> 0.3.0"},
-      {:plug_heartbeat, "~> 0.1"},
-      {:earmark, "~> 0.1", only: :dev},
-      {:ex_doc, "~> 0.7", only: :dev},
-      {:inch_ex, only: :docs},
-      {:credo, "~> 0.4", only: [:dev, :test]},
+      {:plug, "~> 1.4"},
+      {:cowboy, "~> 1.1"},
+      {:poison, "~> 3.1"},
+      {:calliope, "~> 0.4.2"},
+      {:plug_heartbeat, "~> 0.2"},
+      {:earmark, "~> 1.2", only: :dev},
+      {:ex_doc, "~> 0.16", only: :dev},
+      {:inch_ex, ">= 0.0.0", only: :docs},
+      {:credo, "~> 0.8", only: [:dev, :test]},
     ]
   end
 

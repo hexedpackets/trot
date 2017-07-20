@@ -13,11 +13,11 @@ defmodule Mix.Tasks.Trot.Server do
   """
   def run(args) do
     Mix.Task.run "app.start", args
-    no_halt
+    no_halt()
   end
 
   defp no_halt do
-    unless iex_running?, do: :timer.sleep(:infinity)
+    unless iex_running?(), do: :timer.sleep(:infinity)
   end
 
   defp iex_running? do

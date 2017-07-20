@@ -1,7 +1,9 @@
-# 0.6.0 UNRELEASED
+# 0.6.0 July 20, 2017
 - Support for settting custom plugs to pass requests through before or after routing
-- Update Plug to the latest version, 1.1
 - New plug, Trot.AuthCheck, for requiring authorization on a select set of routes.
+- Update Elixir to 1.4
+- Update dependancies
+- Replace deprecated `Behaviour` module with `@callback` attributes
 
 # 0.5.3 October 1, 2015
 - Update plug_heartbeat dependency to remove usage of deprecated function in Plug

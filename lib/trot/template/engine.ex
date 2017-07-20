@@ -8,16 +8,14 @@ defmodule Trot.Template.Engine do
   production usage and should output the full quoted version of the template.
   """
 
-  use Behaviour
-
   @doc """
   Return a quoted expression used to render a file from disk.
   """
-  defcallback compile(template_file :: binary) :: Macro.t
+  @callback compile(template_file :: binary) :: Macro.t
 
   @doc """
   Return a quoted expression of a fully rendered template which only needs to have
   variables assigned.
   """
-  defcallback full_compile(template_file :: binary) :: Macro.t
+  @callback full_compile(template_file :: binary) :: Macro.t
 end

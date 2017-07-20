@@ -11,7 +11,7 @@ defmodule Trot.TestHelper do
   def call(router, method, uri, params \\ nil, headers \\ []) do
     conn = test_conn(method, uri, params, headers)
     |> router.call(router.init([]))
-    assert conn.state == :sent
+    assert conn.state == :sent or conn.state == :file
     conn
   end
 

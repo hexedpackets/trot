@@ -17,7 +17,7 @@ defmodule Trot.LiveReload do
   def init(opts), do: opts
 
   @doc false
-  def call(conn, [env: :dev]), do: reload |> check_reload(conn)
+  def call(conn, [env: :dev]), do: reload() |> check_reload(conn)
   def call(conn, _opts), do: conn
 
   @doc """
