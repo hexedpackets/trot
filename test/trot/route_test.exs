@@ -169,7 +169,7 @@ defmodule Trot.RouterTest do
   test "route renders haml template" do
     conn = call(Router, :get, "/template/haml/render_me_plz")
     assert conn.status == 200
-    assert String.strip(conn.resp_body) == "<h1>render_me_plz</h1>"
+    assert String.trim(conn.resp_body) == "<h1>render_me_plz</h1>"
   end
 
   test "routes with module-level path prefix" do

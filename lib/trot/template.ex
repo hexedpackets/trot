@@ -124,7 +124,7 @@ defmodule Trot.Template do
   defp extract_extension(file) do
     file
     |> Path.extname
-    |> String.lstrip(?.)
+    |> String.trim_leading(?.)
     |> String.to_atom
   end
 end

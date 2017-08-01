@@ -1,3 +1,6 @@
+# 0.6.1 UNRELEASED
+- Fix deprecation warnings for `String.strip/1` and `String.lstrip/2`.
+
 # 0.6.0 July 20, 2017
 - Support for settting custom plugs to pass requests through before or after routing
 - New plug, Trot.AuthCheck, for requiring authorization on a select set of routes.
