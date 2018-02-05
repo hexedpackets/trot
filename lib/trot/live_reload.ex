@@ -30,14 +30,20 @@ defmodule Trot.LiveReload do
     Mix.Task.run("compile.elixir")
   end
 
+  # As of Elixir 1.6, the `compile.elixir` task returns the result of `Mix.Compilers.Elixir.compile/6` directly
+  # instead of pattern matching/transforming it.
   defp check_reload(res, conn) when is_atom(res), do: check_reload([res], conn)
+  defp check_reload({:noop, rest}, conn), do: check_reload(rest, conn)
   defp check_reload([:noop | rest], conn), do: check_reload(rest, conn)
-  defp check_reload([:ok | _], conn) do
+  defp check_reload({:ok, _rest}, conn), do: force_redirect(conn)
+  defp check_reload([:ok | _rest], conn), do: force_redirect(conn)
+  defp check_reload([], conn), do: conn
+
+  defp force_redirect(conn) do
     location = "/" <> Enum.join(conn.path_info, "/")
     conn
     |> Plug.Conn.put_resp_header("location", location)
     |> Plug.Conn.send_resp(302, "")
     |> Plug.Conn.halt
   end
-  defp check_reload([], conn), do: conn
 end

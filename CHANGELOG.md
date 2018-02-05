@@ -1,5 +1,6 @@
 # 0.6.1 UNRELEASED
 - Fix deprecation warnings for `String.strip/1` and `String.lstrip/2`.
+- Update live reload Plug for compatability with Elixir 1.6.
 
 # 0.6.0 July 20, 2017
 - Support for settting custom plugs to pass requests through before or after routing
