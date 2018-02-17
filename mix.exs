@@ -20,7 +20,7 @@ defmodule Trot.Mixfile do
   end
 
   def application do
-    [applications: [:logger, :plug, :cowboy, :plug_heartbeat],
+    [applications: [:logger, :plug, :cowboy, :plug_heartbeat, :slime],
      mod: {Trot, []}]
   end
 
@@ -35,6 +35,7 @@ defmodule Trot.Mixfile do
       {:ex_doc, "~> 0.16", only: :dev, runtime: false},
       {:inch_ex, ">= 0.0.0", only: :docs},
       {:credo, "~> 0.8", only: [:dev, :test]},
+      {:slime, "~> 1.1.0"},
     ]
   end
 

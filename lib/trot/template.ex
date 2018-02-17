@@ -20,7 +20,7 @@ defmodule Trot.Template do
       end
   """
 
-  @engines [eex: Trot.Template.EEx, haml: Trot.Template.HAML]
+  @engines [eex: Trot.Template.EEx, haml: Trot.Template.HAML, slim: Trot.Template.Slim]
 
   @doc false
   defmacro __using__(_opts) do
