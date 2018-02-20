@@ -10,8 +10,7 @@ defmodule Trot.Template.Slim do
     quote do
       unquote(file)
       |> File.read!
-      |> Slime.Renderer.precompile 
-      |> EEx.compile_string assigns: var!(assigns)
+      |> Slime.Renderer.render(assigns: var!(assigns))
     end
   end
 
