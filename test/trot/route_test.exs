@@ -33,6 +33,7 @@ defmodule Trot.RouterTest do
     get "/redirect", do: {:redirect, "/text"}
     get "/template/eex/:text", do: render_template("index.html.eex", [body: text])
     get "/template/haml/:text", do: render_template("index.html.haml", [body: text])
+    get "/template/slim/:text", do: render_template("index.html.slim", [body: text])
     get "/headers/keyword", do: {:ok, "", ["x-test-header": "disrupt"]}
     get "/headers/dict", do: {:ok, "", %{"x-test-header" => "disrupt"}}
 
@@ -168,6 +169,12 @@ defmodule Trot.RouterTest do
 
   test "route renders haml template" do
     conn = call(Router, :get, "/template/haml/render_me_plz")
+    assert conn.status == 200
+    assert String.trim(conn.resp_body) == "<h1>render_me_plz</h1>"
+  end
+
+  test "route renders slim template" do
+    conn = call(Router, :get, "/template/slim/render_me_plz")
     assert conn.status == 200
     assert String.trim(conn.resp_body) == "<h1>render_me_plz</h1>"
   end
