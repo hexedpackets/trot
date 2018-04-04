@@ -239,7 +239,7 @@ defmodule Trot.Router do
                         expr: expr,
                         body: Macro.escape(body, unquote: true)] do
 
-      path = Path.join(@path_root, expr)
+      path = Path.join(["/", @path_root, expr]) |> Path.expand()
       {path, guards} = Trot.Router.extract_path_and_guards(path)
       {method, match, guards} = Trot.Router.__route__(method, path, guards, options)
 

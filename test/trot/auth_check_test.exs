@@ -7,12 +7,12 @@ defmodule Trot.AuthCheckTest do
     plug Trot.AuthCheck, [routes: ["/secret"]]
     use Trot.Router
 
-    get "/", do: :ok
+    get "/public", do: :ok
     get "/secret", do: "secret squirrel!"
   end
 
   test "public route is allowed through" do
-    conn = call(AuthCheckRouter, :get, "/")
+    conn = call(AuthCheckRouter, :get, "/public")
     assert conn.status == 200
   end
 

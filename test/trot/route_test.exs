@@ -6,7 +6,7 @@ defmodule Trot.RouterTest do
   defmodule APIRouter do
     use Trot.Router
     @path_root "api"
-    get "/status", do: :ok
+    get "/", do: :ok
   end
 
   defmodule Router do
@@ -19,6 +19,7 @@ defmodule Trot.RouterTest do
     @template_root "test/templates"
     @static_root "test/static"
 
+    get "/", do: :ok
     get "/status", do: 200
     get "/status_atom", do: :bad_request
     get "/text", headers: %{"x-content-type" => "do it for the"}, do: {200, "lulz"}
@@ -56,6 +57,11 @@ defmodule Trot.RouterTest do
     def begin_plug(conn, _), do: conn
   end
 
+
+  test "route matching for root" do
+    conn = call(Router, :get, "/")
+    assert conn.status == 200
+  end
 
   test "route returns status code" do
     conn = call(Router, :get, "/status")
@@ -181,7 +187,7 @@ defmodule Trot.RouterTest do
   end
 
   test "routes with module-level path prefix" do
-    conn = call(Router, :get, "/api/status")
+    conn = call(Router, :get, "/api")
     assert conn.status == 200
   end
 
