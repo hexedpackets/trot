@@ -97,6 +97,7 @@ defmodule Trot.RouterTest do
     conn = call(Router, :get, "/json")
     assert conn.status == 200
     assert conn.resp_body == "{\"hyper\":\"social\"}"
+    assert Plug.Conn.get_resp_header(conn, "content-type") == ["application/json"]
   end
 
   test "route returns json with status code" do

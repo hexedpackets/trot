@@ -1,3 +1,6 @@
+# UNRELEASED
+- Set the Content-Type response header to application/json automatically when encoding JSON responses.
+
 # 0.6.1 April 4, 2018
 - Fix deprecation warnings for `String.strip/1` and `String.lstrip/2`.
 - Update live reload Plug for compatability with Elixir 1.6.

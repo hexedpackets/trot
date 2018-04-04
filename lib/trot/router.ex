@@ -164,12 +164,10 @@ defmodule Trot.Router do
   end
   def make_response({code, body}, conn) when is_number(code) do
     body = Poison.encode!(body)
+    conn = Plug.Conn.put_resp_header(conn, "content-type", "application/json")
     make_response({code, body}, conn)
   end
-  def make_response(body, conn) do
-    body = Poison.encode!(body)
-    make_response({:ok, body}, conn)
-  end
+  def make_response(body, conn), do: make_response({:ok, body}, conn)
 
   @doc """
   Redirect the request to another location.
