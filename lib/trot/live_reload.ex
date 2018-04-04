@@ -37,6 +37,7 @@ defmodule Trot.LiveReload do
   defp check_reload([:noop | rest], conn), do: check_reload(rest, conn)
   defp check_reload({:ok, _rest}, conn), do: force_redirect(conn)
   defp check_reload([:ok | _rest], conn), do: force_redirect(conn)
+  defp check_reload([%Mix.Task.Compiler.Diagnostic{} | rest], conn), do: check_reload(rest, conn)
   defp check_reload([], conn), do: conn
 
   defp force_redirect(conn) do
