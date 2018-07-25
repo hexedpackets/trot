@@ -1,4 +1,4 @@
-# UNRELEASED
+# 0.7.0 July 25, 2018
 - Set the Content-Type response header to application/json automatically when encoding JSON responses.
 - Fix for handling of the path "/" in Elixir 1.6
 - Add `Plug.Parsers` to the default pre-routing Plug list.
