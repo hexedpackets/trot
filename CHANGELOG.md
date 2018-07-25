@@ -1,6 +1,7 @@
 # UNRELEASED
 - Set the Content-Type response header to application/json automatically when encoding JSON responses.
 - Fix for handling of the path "/" in Elixir 1.6
+- Add `Plug.Parsers` to the default pre-routing Plug list.
 
 # 0.6.1 April 4, 2018
 - Fix deprecation warnings for `String.strip/1` and `String.lstrip/2`.

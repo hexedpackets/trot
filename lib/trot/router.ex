@@ -43,6 +43,7 @@ defmodule Trot.Router do
       default_pre_routing = [
         "Elixir.Trot.LiveReload": [env: Mix.env],
         "Elixir.Plug.Logger": [],
+        "Elixir.Plug.Parsers": [parsers: [:urlencoded, :json], pass: ["text/*"], json_decoder: Poison],
         "Elixir.PlugHeartbeat": [path: Application.get_env(:trot, :heartbeat, "/heartbeat")],
       ]
       pre_routing = Application.get_env(:trot, :pre_routing, default_pre_routing)

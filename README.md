@@ -25,7 +25,7 @@ The following configuration options are supported by the server:
 `config :trot, :heartbeat, "/heartbeat"`: path to setup a heartbeat route. This will always return 200 with a body of
 "OK". Defaults to "/heartbeat". NOTE: This value will only have an effect when PlugHeartbeat is part of the plug list.
 
-`config :trot, :pre_routing, ["Elixir.CustomPlug": [plug_arg: value]]`: Plugs that should be run before routing a request along with their arguments. Defaults to setting up "Trot.LiveReload", "Plug.Logger", and "PlugHeartbeat" in that order.
+`config :trot, :pre_routing, ["Elixir.CustomPlug": [plug_arg: value]]`: Plugs that should be run before routing a request along with their arguments. Defaults to setting up "Trot.LiveReload", "Plug.Logger", "Plug.Parsers", and "PlugHeartbeat" in that order.
 
 `config :trot, :post_routing, ["Elixir.CustomPlug": [plug_arg: value]]`: Plugs that should be run after routing a request along with their arguments. Defaults to "[]".
 
