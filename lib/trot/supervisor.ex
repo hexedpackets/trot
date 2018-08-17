@@ -14,10 +14,11 @@ defmodule Trot.Supervisor do
       port when is_binary(port) -> String.to_integer(port)
       port -> port
     end
+    protocol_options = Application.get_env(:trot, :protocol_options, [])
     router_module = Application.get_env(:trot, :router, Trot.NotFound)
 
     children = [
-      Plug.Adapters.Cowboy.child_spec(:http, router_module, [], [port: port]),
+      Plug.Adapters.Cowboy.child_spec(:http, router_module, [], [port: port, protocol_options: protocol_options]),
     ]
     supervise(children, strategy: :one_for_one)
   end
