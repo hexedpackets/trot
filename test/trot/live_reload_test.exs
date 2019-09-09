@@ -8,7 +8,6 @@ defmodule Trot.LiveReloadTest do
 
   test "reloading maintains the requested URL" do
     conn = test_conn(:get, "/foo") |> Trot.LiveReload.call([env: :dev])
-    assert conn.state == :sent
     assert conn.status == 302
     assert Plug.Conn.get_resp_header(conn, "location") |> List.first == "/foo"
   end

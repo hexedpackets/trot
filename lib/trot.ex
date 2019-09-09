@@ -8,7 +8,18 @@ defmodule Trot do
 
   @doc false
   def start(_type, _args) do
-    Trot.Supervisor.start_link
+    port =
+      case Application.get_env(:trot, :port, 4000) do
+        port when is_binary(port) -> String.to_integer(port)
+        port -> port
+      end
+    router_module = Application.get_env(:trot, :router, Trot.NotFound)
+
+    children = [
+      {Plug.Cowboy, scheme: :http, plug: router_module, options: [port: port]},
+      #Plug.Adapters.Cowboy.child_spec(:http, router_module, [], [port: port]),
+    ]
+    Supervisor.start_link(children, [strategy: :one_for_one, name: Trot.Supervisor])
   end
 
   @http_methods [:get, :post, :put, :patch, :delete, :options]

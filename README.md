@@ -4,15 +4,11 @@
 Trot is an Elixir web micro-framework based on Plug and Cowboy. The goal of Trot is to make common patterns in Plug easier to use, particularly when writing APIs, without sacrificing flexibility.
 
 ## Usage
-Add Trot as a dependency to your `mix.exs` file and update your applications list to include it.
+Add Trot as a dependency to your `mix.exs` file:
 
 ```Elixir
     defp deps do
       [{:trot, github: "hexedpackets/trot"}]
-    end
-
-    def application do
-      [applications: [:trot]]
     end
 ```
 
